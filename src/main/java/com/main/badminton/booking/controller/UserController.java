@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/user")
 @RestController
 public class UserController {
-    @GetMapping("/ping")
-    public API.Response<?> Ping() {
-        String data = "Pong...Pong...Pong...";
-        LogUtil.logInfo("Pong...Pong...Pong...");
-        return API.Response.success(data);
-    }
-
-    @GetMapping("/ping2/{test}")
-    public API.Response<?> PingV2(@PathVariable int test) {
-        String data = "V2...Pong...Pong...Pong...test:"+test;
-        LogUtil.logInfo("Pong...Pong...Pong...");
-        return API.Response.success(data);
-    }
+//    @GetMapping("/ping")
+//    public API.Response<?> Ping() {
+//        String data = "Pong...Pong...Pong...";
+//        LogUtil.logInfo("Pong...Pong...Pong...");
+//        return API.Response.success(data);
+//    }
+//
+//    @GetMapping("/ping2/{test}")
+//    public API.Response<?> PingV2(@PathVariable int test) {
+//        String data = "V2...Pong...Pong...Pong...test:"+test;
+//        LogUtil.logInfo("Pong...Pong...Pong...");
+//        return API.Response.success(data);
+//    }
 }
