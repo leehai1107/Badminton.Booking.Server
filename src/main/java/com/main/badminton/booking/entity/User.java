@@ -1,12 +1,13 @@
 package com.main.badminton.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.main.badminton.booking.token.Token;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String email;
     private String password;
 
@@ -40,6 +42,10 @@ public class User implements UserDetails{
     public String getUsername() {
         return email;
     }
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Token> tokens;
 
     @Override
     public boolean isAccountNonExpired() {

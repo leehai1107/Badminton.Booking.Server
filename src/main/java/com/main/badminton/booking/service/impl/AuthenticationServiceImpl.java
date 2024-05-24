@@ -1,21 +1,32 @@
 package com.main.badminton.booking.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.badminton.booking.dto.request.RefreshTokenRequest;
 import com.main.badminton.booking.dto.request.SignInRequest;
 import com.main.badminton.booking.dto.request.SignUpRequest;
 import com.main.badminton.booking.dto.response.JwtAuthenticationResponse;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.repository.RoleRepo;
+import com.main.badminton.booking.repository.TokenRepository;
 import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.service.interfc.AuthenticationService;
 import com.main.badminton.booking.service.interfc.JWTService;
+import com.main.badminton.booking.token.Token;
+import com.main.badminton.booking.token.TokenType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -31,41 +42,135 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final RoleRepo roleRepo;
 
+    @Autowired
+    private final TokenRepository tokenRepository;
+//    private static final Logger logger = LoggerFactory.getLogger(LogoutService.class);
 
 
     @Override
-    public User signUp(SignUpRequest signUpRequest) {
+    public JwtAuthenticationResponse signUp(SignUpRequest signUpRequest) {
         User user = new User();
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(roleRepo.getById(2));
-        return userRepo.save(user);
+        var savedUser = userRepo.save(user);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return JwtAuthenticationResponse.builder()
+                .token(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
-       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
-       var user = userRepo.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
-       var jwt = jwtService.generateToken(user);
-       var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
+        var user = userRepo.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-       JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-       jwtAuthenticationResponse.setToken(jwt);
-       jwtAuthenticationResponse.setRefreshToken(refreshToken);
-       return jwtAuthenticationResponse;
+        revokeAllUserToken(user);
+        saveUserToken(user, jwt, refreshToken);
+
+        JwtAuthenticationResponse jwtAuthenticationResponse =
+                JwtAuthenticationResponse.builder()
+                        .token(jwt)
+                        .refreshToken(refreshToken)
+                        .build();
+        return jwtAuthenticationResponse;
     }
 
     @Override
-    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
-        User user = userRepo.findByEmail(userEmail).orElseThrow();
-        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-            var jwt = jwtService.generateToken(user);
-            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-            jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
-            return jwtAuthenticationResponse;
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshedToken;
+        final String username;
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("text/plain");
+            try {
+                response.getWriter().write("No JWT token found in the request header");
+            } catch (IOException e) {
+//                logger.error("Error writing unauthorized response", e);
+                throw new BadRequestException("ERROR !");
+            }
+            return;
         }
-        return null;
+        refreshedToken = authHeader.substring(7);
+        username = jwtService.extractUsername(refreshedToken);
+        final Token currentRefreshedToken = tokenRepository.findByRefreshToken(refreshedToken).get();
+
+        if(username != null){
+            var user = this.userRepo.findByEmail(username).orElseThrow();
+            if((jwtService.isTokenValid(refreshedToken, user)) &&
+            !currentRefreshedToken.isRevoked() && !currentRefreshedToken.isExpired()){
+                var accessToken = jwtService.generateToken(user);
+                var authResponse = JwtAuthenticationResponse.builder()
+                        .token(accessToken)
+                        .refreshToken(refreshedToken)
+                        .build();
+                revokeAllUserToken(user);
+                saveUserToken(user, accessToken, refreshedToken);
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+                ResponseEntity.ok(authResponse);
+            } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType("text/plain");
+                try {
+                    response.getWriter().write("JWT token has expired and revoked");
+                } catch (IOException e) {
+//                    logger.error("Error writing unauthorized response", e);
+                    throw new BadRequestException("ERROR");
+                }
+            }
+            return;
+        }
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType("text/plain");
+        try {
+            response.getWriter().write("Unauthorized");
+        } catch (IOException e) {
+//            logger.error("Error writing unauthorized response", e);
+            throw new BadRequestException("ERROR");
+        }
+        ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    }
+
+//    @Override
+//    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+//        String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
+//        User user = userRepo.findByEmail(userEmail).orElseThrow();
+//        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
+//            var jwt = jwtService.generateToken(user);
+//            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+//            jwtAuthenticationResponse.setToken(jwt);
+//            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
+//            return jwtAuthenticationResponse;
+//        }
+//        return null;
+//    }
+
+    private void revokeAllUserToken(User user){
+        var validUserToken = tokenRepository.findAllValidTokensByUser((long) user.getId());
+        if(validUserToken.isEmpty()) return;
+        validUserToken.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserToken);
+    }
+
+
+    private void saveUserToken(User user, String jwtToken, String jwtRefreshToken){
+        Token token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .refreshToken(jwtRefreshToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
     }
 }

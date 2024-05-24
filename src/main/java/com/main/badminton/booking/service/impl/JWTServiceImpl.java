@@ -6,15 +6,25 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 @Service
 public class JWTServiceImpl implements JWTService {
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
+    @Value("${jwt.expiration.access-token}")
+    private long jwtExpiration;
+
+    @Value("${jwt.expiration.refresh-token}")
+    private long refreshExpiration;
+
     @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -26,7 +36,7 @@ public class JWTServiceImpl implements JWTService {
     }
 
     private Key getSignKey(){
-        byte[] key = Decoders.BASE64.decode("413F4428472B4B6250655368566D5970337336763979244226452948404D6351");
+        byte[] key = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(key);
     }
 
@@ -34,24 +44,35 @@ public class JWTServiceImpl implements JWTService {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
 
-
-
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        return Jwts.builder().setSubject(userDetails.getUsername())
+    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long jwtExpiration) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .claim("role", populateAuthorities(userDetails.getAuthorities()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+    private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        Set<String> authoritiesSet = new HashSet<>();
+        for (GrantedAuthority authority : authorities) {
+            authoritiesSet.add(authority.getAuthority());
+        }
+        return String.join(",", authoritiesSet);
+    }
 
-    @Override
-    public String generateRefreshToken(Map<String, Object> extractClaims, UserDetails userDetails) {
-        return Jwts.builder().setClaims(extractClaims).setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 604800000))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
-                .compact();
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+    }
+
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
     @Override

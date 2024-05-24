@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
-public class Application  implements CommandLineRunner {
+public class Application   {
 	@Autowired
 	private UserRepo userRepository;
 
@@ -21,16 +21,16 @@ public class Application  implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	public void run(String... args){
-		Role role = roleRepo.findById(1).orElseThrow();
-		User adminAccount = userRepository.findByRole(role);
-
-		if(null == adminAccount){
-			User user = new User();
-			user.setEmail("admin@gmail.com");
-			user.setRole(role);
-			user.setPassword(new BCryptPasswordEncoder().encode("123"));
-			userRepository.save(user);
-		}
-	}
+//	public void run(String... args){
+//		Role role = roleRepo.findById(1).orElseThrow();
+//		User adminAccount = userRepository.findByRole(role);
+//
+//		if(null == adminAccount){
+//			User user = new User();
+//			user.setEmail("admin@gmail.com");
+//			user.setRole(role);
+//			user.setPassword(new BCryptPasswordEncoder().encode("123"));
+//			userRepository.save(user);
+//		}
+//	}
 }
