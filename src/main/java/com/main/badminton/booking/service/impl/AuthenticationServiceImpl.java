@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse signUp(SignUpRequest signUpRequest) {
         User user = new User();
-        user.setEmail(signUpRequest.getEmail());
+        user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(roleRepo.getById(2));
         var savedUser = userRepo.save(user);
@@ -65,8 +65,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
-        var user = userRepo.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
+        var user = userRepo.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         final Token currentRefreshedToken = tokenRepository.findByRefreshToken(refreshedToken).get();
 
         if(username != null){
-            var user = this.userRepo.findByEmail(username).orElseThrow();
+            var user = this.userRepo.findByUsername(username).orElseThrow();
             if((jwtService.isTokenValid(refreshedToken, user)) &&
             !currentRefreshedToken.isRevoked() && !currentRefreshedToken.isExpired()){
                 var accessToken = jwtService.generateToken(user);
@@ -137,19 +137,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
-//    @Override
-//    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-//        String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
-//        User user = userRepo.findByEmail(userEmail).orElseThrow();
-//        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-//            var jwt = jwtService.generateToken(user);
-//            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-//            jwtAuthenticationResponse.setToken(jwt);
-//            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
-//            return jwtAuthenticationResponse;
-//        }
-//        return null;
-//    }
 
     private void revokeAllUserToken(User user){
         var validUserToken = tokenRepository.findAllValidTokensByUser((long) user.getId());
