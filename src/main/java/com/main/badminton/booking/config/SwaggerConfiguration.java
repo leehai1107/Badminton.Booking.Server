@@ -21,7 +21,7 @@ public class SwaggerConfiguration {
     }
 
     @Bean
-    public OpenAPI birthdayBuddyOpenAPI() {
+    public OpenAPI BadmintonBookingOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("Badminton Booking API")
                         .description("Badminton booking application")
