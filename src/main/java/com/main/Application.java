@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class Application  implements CommandLineRunner {
@@ -24,10 +26,25 @@ public class Application  implements CommandLineRunner {
 		SpringApplication.run(Application.class, args);
 	}
 	public void run(String... args){
+		if(roleRepo.count() == 0){
+			List<Role> roles = new ArrayList<>();
+			Role adminRole = Role.builder()
+					.id(1)
+					.name("ROLE_ADMIN")
+					.build();
+			Role userRole = Role.builder()
+					.id(2)
+					.name("ROLE_USER")
+					.build();
+			roles.add(adminRole);
+			roles.add(userRole);
+			roleRepo.saveAll(roles);
+		}
+
 		Role role = roleRepo.findById(1).orElseThrow();
 		User adminAccount = userRepository.findByRole(role);
 
-		if(null == adminAccount){
+		if(null == adminAccount ){
 			User user = new User();
 			user.setCreateBy(0);
 			user.setUsername("admin");

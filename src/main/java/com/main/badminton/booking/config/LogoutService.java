@@ -1,0 +1,49 @@
+package com.main.badminton.booking.config;
+
+import com.main.badminton.booking.repository.TokenRepository;
+import com.main.badminton.booking.utils.logger.LogUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Service;
+import java.io.IOException;
+
+@Service
+@RequiredArgsConstructor
+public class LogoutService implements LogoutHandler {
+    @Autowired
+    private final TokenRepository tokenRepository;
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwtToken;
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("text/plain");
+            try {
+                response.getWriter().write("No JWT token found in the request header");
+            } catch (IOException e) {
+                LogUtil.logError("Error writing unauthorized response");
+            }
+            return;
+        }
+        jwtToken = authHeader.substring(7);
+        var storedToken = tokenRepository.findByToken(jwtToken).orElse(null);
+        if(storedToken != null){
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
+            tokenRepository.save(storedToken);
+            response.setStatus(HttpStatus.OK.value());
+            response.setContentType("text/plain");
+            try {
+                response.getWriter().write("Logged out successfully");
+            } catch (IOException e) {
+                LogUtil.logError("Error writing unauthorized response");
+            }
+        }
+    }
+}
