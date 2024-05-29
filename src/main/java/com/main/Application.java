@@ -36,8 +36,13 @@ public class Application  implements CommandLineRunner {
 					.id(2)
 					.name("ROLE_USER")
 					.build();
+			Role staffRole = Role.builder()
+					.id(3)
+					.name("ROLE_STAFF")
+					.build();
 			roles.add(adminRole);
 			roles.add(userRole);
+			roles.add(staffRole);
 			roleRepo.saveAll(roles);
 		}
 

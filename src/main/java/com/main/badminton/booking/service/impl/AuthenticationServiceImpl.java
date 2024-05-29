@@ -1,10 +1,12 @@
 package com.main.badminton.booking.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.main.badminton.booking.config.ApplicationAuditing;
 import com.main.badminton.booking.dto.request.RefreshTokenRequest;
 import com.main.badminton.booking.dto.request.SignInRequest;
 import com.main.badminton.booking.dto.request.SignUpRequest;
 import com.main.badminton.booking.dto.response.JwtAuthenticationResponse;
+import com.main.badminton.booking.entity.Role;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.repository.RoleRepo;
 import com.main.badminton.booking.repository.TokenRepository;
@@ -52,10 +54,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setRole(roleRepo.getById(2));
+
+
+        Role role = roleRepo.findById(signUpRequest.getRoleId())
+                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+
+        user.setRole(role);
+
+        // Nếu vai trò là "staff", thì phải có createBy từ Auditing
+        if (3 == role.getId()) {
+            ApplicationAuditing auth = new ApplicationAuditing();
+            var currentAuditor = auth.getCurrentAuditor();
+            if (currentAuditor.isPresent()) {
+                user.setCreateBy(currentAuditor.get());
+            } else {
+                throw new IllegalStateException("No auditor found for staff sign up");
+            }
+        } else {
+            user.setCreateBy(0);
+        }
+
         var savedUser = userRepo.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
+        saveUserToken(savedUser, jwtToken, refreshToken);
 
         return JwtAuthenticationResponse.builder()
                 .token(jwtToken)
