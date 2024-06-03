@@ -40,6 +40,9 @@ public class Yards {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "status")
+    private Boolean status;
+
     @Column(name = "open_time")
     private LocalDateTime openTime;
 
