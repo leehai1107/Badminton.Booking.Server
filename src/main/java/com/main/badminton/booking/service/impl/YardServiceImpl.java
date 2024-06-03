@@ -24,10 +24,6 @@ public class YardServiceImpl implements YardService {
     @Autowired
     private YardConverter yardConverter;
 
-    @Autowired
-    private RestTemplate
-
-    @Override
     public YardResponseDTO createYard(YardRequestDTO request) {
         if (request.getOpenTime().isAfter(request.getCloseTime())) {
             throw new IllegalArgumentException("Open time must be before close time");
