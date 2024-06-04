@@ -2,6 +2,7 @@ package com.main.badminton.booking.controller;
 
 import com.main.badminton.booking.utils.logger.LogUtil;
 import com.main.badminton.booking.utils.wapper.API;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/user")
 @RestController
 public class UserController {
+
+//    @PreAuthorize("hasRole('USER')")
     @GetMapping("/ping")
     public API.Response<?> Ping() {
         String data = "Pong...Pong...Pong...";
