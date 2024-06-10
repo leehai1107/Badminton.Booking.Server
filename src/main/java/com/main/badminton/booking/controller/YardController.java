@@ -9,6 +9,7 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.main.badminton.booking.entity.Yards;
@@ -30,8 +31,8 @@ public class YardController {
     private final IYardService yardService;
 
     @GetMapping()
-    public API.Response<List<YardResponseDTO>> getAllYards(){
-        List<Yards> yards = yardService.getAllYards();
+    public API.Response<List<YardResponseDTO>> getAllYards(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber){
+        List<Yards> yards = yardService.getAllYards(pageNumber);
         List<YardResponseDTO> yardResponseDTOS = yards
                 .stream()
                 .map(yardConverter::toYardResponseDTO)
@@ -40,8 +41,23 @@ public class YardController {
     }
 
     @GetMapping("/active")
-    public API.Response<List<Yards>> getAllActiveYards(){
-        List<Yards> yards = yardService.getAllYardsByActiveStatus();
-        return API.Response.success(yards);
+    public API.Response<List<YardResponseDTO>> getAllActiveYards(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber){
+        List<Yards> yards = yardService.getAllYardsByActiveStatus(pageNumber);
+        List<YardResponseDTO> yardResponseDTOS = yards
+                .stream()
+                .map(yardConverter::toYardResponseDTO)
+                .toList();
+        return API.Response.success(yardResponseDTOS);
+    }
+
+    @GetMapping("/search")
+    public API.Response<List<YardResponseDTO>> getYardByName(@RequestParam(name = "name") String name,
+                                                   @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber){
+        List<Yards> yards = yardService.getYardsByName(name, pageNumber);
+        List<YardResponseDTO> yardResponseDTOS = yards
+                .stream()
+                .map(yardConverter::toYardResponseDTO)
+                .toList();
+        return API.Response.success(yardResponseDTOS);
     }
 }
