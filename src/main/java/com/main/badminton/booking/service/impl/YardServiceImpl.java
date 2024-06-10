@@ -3,7 +3,9 @@ package com.main.badminton.booking.service.impl;
 import com.main.badminton.booking.converter.YardConverter;
 import com.main.badminton.booking.dto.request.YardRequestDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
+import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.entity.Yards;
+import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.repository.YardRepository;
 import com.main.badminton.booking.service.interfc.YardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +27,14 @@ public class YardServiceImpl implements YardService {
     private YardConverter yardConverter;
 
     public YardResponseDTO createYard(YardRequestDTO request) {
-        if (request.getOpenTime().isAfter(request.getCloseTime())) {
-            throw new IllegalArgumentException("Open time must be before close time");
-        }
-
-        Yards yard = yardConverter.toEntity(request);
-        yard = yardRepository.save(yard);
-        return yardConverter.toResponseDTO(yard);
+//        if (request.getOpenTime().isAfter(request.getCloseTime())) {
+//            throw new IllegalArgumentException("Open time must be before close time");
+//        }
+//
+//        Yards yard = yardConverter.toEntity(request);
+//        yard = yardRepository.save(yard);
+//        return yardConverter.toResponseDTO(yard);
+        return null;
     }
 
     @Override
@@ -41,5 +44,22 @@ public class YardServiceImpl implements YardService {
                 .map(Yards::getProvinceId)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+
+    @Autowired
+    public YardServiceImpl(YardRepository yardRepository, YardConverter yardConverter) {
+        this.yardRepository = yardRepository;
+        this.yardConverter = yardConverter;
+    }
+    @Override
+    public YardResponseDTO updateYard(Integer id, YardRequestDTO yardRequestDTO) {
+        Yards yard = yardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Yard not found"));
+
+        yardConverter.updateEntity(yardRequestDTO, yard);
+
+        Yards updatedYard = yardRepository.save(yard);
+        return yardConverter.toResponseDTO(updatedYard);
     }
 }
