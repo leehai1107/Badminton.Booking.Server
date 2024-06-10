@@ -32,24 +32,11 @@ public class YardServiceImpl implements YardService {
         this.yardConverter = yardConverter;
     }
 
-    public YardResponseDTO createYard(YardRequestDTO request) {
-//        if (request.getOpenTime().isAfter(request.getCloseTime())) {
-//            throw new IllegalArgumentException("Open time must be before close time");
-//        }
-//
-//        Yards yard = yardConverter.toEntity(request);
-//        yard = yardRepository.save(yard);
-//        return yardConverter.toResponseDTO(yard);
-        return null;
-        if (request.getOpenTime().isAfter(request.getCloseTime())) {
-            throw new IllegalArgumentException("Open time must be before close time");
-        }
-
-        Yards yard = yardConverter.toEntity(request);
-        yard = yardRepository.save(yard);
-        return yardConverter.toResponseDTO(yard);
+    @Override
+    public void createYard(YardRequestDTO requestDTO, User host) {
+        Yards yard = yardConverter.toEntity(requestDTO, host);
+        yardRepository.save(yard);
     }
-
     @Override
     public List<Integer> getProvinceIds() {
         return yardRepository.findAll()
@@ -63,6 +50,7 @@ public class YardServiceImpl implements YardService {
         return yardRepository.findById(id)
                 .map(yardConverter::toResponseDTO)
                 .orElse(null);
+    }
     public YardResponseDTO updateYard(Integer id, YardRequestDTO yardRequestDTO) {
         Yards yard = yardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Yard not found"));

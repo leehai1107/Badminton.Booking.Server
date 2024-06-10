@@ -14,5 +14,4 @@ public class YardRequestDTO {
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
     private Integer hostId;
-
 }
