@@ -12,5 +12,5 @@ public interface UserService {
     UserResponseDTO getUserById(Integer id);
     UserResponseDTO getUserByUsername(String username);
     UserResponseDTO getUserByEmail(String email);
-    UserResponseDTO getUser(UserRequestDTO userRequestDTO);
+    List<UserResponseDTO> searchUsers(String keyword);
 }

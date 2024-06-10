@@ -53,13 +53,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO getUser(UserRequestDTO userRequestDTO) {
-        User user = null;
-        if (userRequestDTO.getUsername() != null) {
-            user = userRepo.findByUsername(userRequestDTO.getUsername()).orElse(null);
-        } else if (userRequestDTO.getEmail() != null) {
-            user = userRepo.findByEmail(userRequestDTO.getEmail()).orElse(null);
-        }
-        return user != null ? userConverter.convertToDto(user) : null;
+    public List<UserResponseDTO> searchUsers(String keyword) {
+        List<User> users = userRepo.findByKeyword(keyword);
+        return users.stream()
+                .map(userConverter::convertToDto)
+                .collect(Collectors.toList());
     }
 }

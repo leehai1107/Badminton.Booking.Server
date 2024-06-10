@@ -6,9 +6,12 @@ import com.main.badminton.booking.service.impl.UserServiceImpl;
 import com.main.badminton.booking.utils.logger.LogUtil;
 import com.main.badminton.booking.utils.wapper.API;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("api/v1/user")
 @RestController
@@ -57,12 +60,13 @@ public class UserController {
         return ResponseEntity.ok(userResponseDTO);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<UserResponseDTO> getUser(@RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO userResponseDTO = userService.getUser(userRequestDTO);
-        if (userResponseDTO == null) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/search")
+    public ResponseEntity<Object> searchUsers(@RequestParam String keyword) {
+        List<UserResponseDTO> users = userService.searchUsers(keyword);
+        if (users.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No users found with the provided keyword.");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(users);
         }
-        return ResponseEntity.ok(userResponseDTO);
     }
 }

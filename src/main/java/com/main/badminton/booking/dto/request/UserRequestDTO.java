@@ -6,6 +6,5 @@ import java.util.Date;
 
 @Data
 public class UserRequestDTO {
-    private String username;
-    private String email;
+    private String keyword;
 }
