@@ -7,7 +7,7 @@ import com.main.badminton.booking.entity.User;
 import java.util.List;
 
 public interface YardService {
-    void createYard(YardRequestDTO requestDTO, User host);
+    void createYard(YardRequestDTO requestDTO);
     List<Integer> getProvinceIds();
     YardResponseDTO updateYard(Integer id, YardRequestDTO yardRequestDTO);
     YardResponseDTO getYardById(Integer id);
