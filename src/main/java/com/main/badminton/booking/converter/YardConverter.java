@@ -40,6 +40,17 @@ public class YardConverter {
                 .host(host)
                 .build();
     }
+    public Yards toEntity(YardRequestDTO dto) {
+        return Yards.builder()
+                .name(dto.getName())
+                .address(dto.getAddress())
+                .provinceId(dto.getProvinceId())
+                .description(dto.getDescription())
+                .status(dto.getStatus())
+                .openTime(dto.getOpenTime())
+                .closeTime(dto.getCloseTime())
+                .build();
+    }
 
     public void updateEntity(YardRequestDTO dto, Yards yard) {
         yard.setName(dto.getName());

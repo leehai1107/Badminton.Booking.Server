@@ -33,8 +33,8 @@ public class YardServiceImpl implements YardService {
     }
 
     @Override
-    public void createYard(YardRequestDTO requestDTO, User host) {
-        Yards yard = yardConverter.toEntity(requestDTO, host);
+    public void createYard(YardRequestDTO requestDTO) {
+        Yards yard = yardConverter.toEntity(requestDTO);
         yardRepository.save(yard);
     }
     @Override

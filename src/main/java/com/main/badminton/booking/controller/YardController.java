@@ -17,11 +17,11 @@ public class YardController {
     @Autowired
     private YardService yardService;
 
-//    @PostMapping
-//    public ResponseEntity<String> createYard(@RequestBody YardRequestDTO requestDTO) {
-//        yardService.createYard(requestDTO);
-//        return new ResponseEntity<>("Yard created successfully", HttpStatus.CREATED);
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<String> createYard(@RequestBody YardRequestDTO requestDTO) {
+        yardService.createYard(requestDTO);
+        return new ResponseEntity<>("Yard created successfully", HttpStatus.CREATED);
+    }
 
     @GetMapping("/province-ids")
     public ResponseEntity<List<Integer>> getProvinceIds() {
