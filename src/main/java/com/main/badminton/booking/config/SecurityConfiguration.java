@@ -1,12 +1,12 @@
 package com.main.badminton.booking.config;
 
-
 import com.main.badminton.booking.exception.CustomAccessDeniedHandler;
 import com.main.badminton.booking.service.interfc.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,14 +30,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
+
     @Autowired
-    private final JWTAuthenticationFilter jwtAuthenticationFilter;
+    @Lazy
+    private JWTAuthenticationFilter jwtAuthenticationFilter;
+
     @Autowired
-    private final UserService userService;
-    @Autowired
+    @Lazy
+    private UserService userService;
     private final LogoutService logoutHandler;
-    @Autowired
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    public void setJwtAuthenticationFilter(@Lazy JWTAuthenticationFilter jwtAuthenticationFilter, @Lazy UserService userService) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,8 +53,6 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**", "/api/v1/admin/**", "/api/v1/user/**", "/api/v1/yards/**")
                         .permitAll()
-//                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.accessDeniedHandler(customAccessDeniedHandler)
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
@@ -68,7 +74,6 @@ public class SecurityConfiguration {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

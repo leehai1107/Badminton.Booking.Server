@@ -42,6 +42,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
     @Column(name = "status")
+    @JsonIgnore
     private Boolean status;
     @Column(name = "gender")
     private Boolean gender;
@@ -54,12 +55,10 @@ public class User implements UserDetails {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    @JsonIgnore
     private LocalDateTime createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
-    @JsonIgnore
     private LocalDateTime updateDate;
 
     @Column(name = "create_by", nullable = false, updatable = false)
