@@ -42,4 +42,10 @@ public class YardServiceImpl implements YardService {
                 .distinct()
                 .collect(Collectors.toList());
     }
+    @Override
+    public YardResponseDTO getYardById(Integer id) {
+        return yardRepository.findById(id)
+                .map(yardConverter::toResponseDTO)
+                .orElse(null);
+    }
 }

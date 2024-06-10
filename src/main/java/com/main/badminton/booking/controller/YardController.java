@@ -27,4 +27,12 @@ public class YardController {
         List<Integer> provinceIds = yardService.getProvinceIds();
         return ResponseEntity.ok(provinceIds);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<YardResponseDTO> getYardById(@PathVariable Integer id) {
+        YardResponseDTO yardResponseDTO = yardService.getYardById(id);
+        if (yardResponseDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(yardResponseDTO);
+    }
 }
