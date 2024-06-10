@@ -53,4 +53,9 @@ public class AuthController {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         logoutService.logout(request, response, authentication);
     }
+
+    @GetMapping("/account")
+    public ResponseEntity<Object> getCurrentLoginUser(HttpServletRequest request) {
+        return authenticationService.getUserInformation(request);
+    }
 }

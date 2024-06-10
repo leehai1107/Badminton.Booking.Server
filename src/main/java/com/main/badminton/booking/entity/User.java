@@ -39,6 +39,7 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
     @Column(name = "password")
+    @JsonIgnore
     private String password;
     @Column(name = "status")
     private Boolean status;
@@ -53,18 +54,22 @@ public class User implements UserDetails {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
+    @JsonIgnore
     private LocalDateTime createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
+    @JsonIgnore
     private LocalDateTime updateDate;
 
     @Column(name = "create_by", nullable = false, updatable = false)
     @CreatedBy
+    @JsonIgnore
     private Integer createBy;
 
     @Column(name = "update_by", insertable = false)
     @LastModifiedBy
+    @JsonIgnore
     private Integer updateBy;
 
     @ManyToOne
@@ -75,27 +80,35 @@ public class User implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "manage_id")
+    @JsonIgnore
     private User manager;
 
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<User> managedUsers;
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Yards> hostOfYards;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<BookingOrders> bookingOrders;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<FeedBacks> feedBacks;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<YardCheckins> yardCheckins;
 
     @OneToMany(mappedBy = "checkInBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<YardCheckins> yardCheckinBys;
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getName()));
     }
@@ -115,21 +128,25 @@ public class User implements UserDetails {
     private List<Token> tokens;
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
