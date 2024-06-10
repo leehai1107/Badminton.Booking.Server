@@ -8,5 +8,6 @@ import java.util.List;
 public interface YardService {
     YardResponseDTO createYard(YardRequestDTO request);
     List<Integer> getProvinceIds();
+    YardResponseDTO updateYard(Integer id, YardRequestDTO yardRequestDTO);
     YardResponseDTO getYardById(Integer id);
 }

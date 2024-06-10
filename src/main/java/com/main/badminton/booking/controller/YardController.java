@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/yards")
+@RequestMapping("/api/v1/yards")
 public class YardController {
 
     @Autowired
@@ -26,6 +26,12 @@ public class YardController {
     public ResponseEntity<List<Integer>> getProvinceIds() {
         List<Integer> provinceIds = yardService.getProvinceIds();
         return ResponseEntity.ok(provinceIds);
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<YardResponseDTO> updateYard(@PathVariable Integer id, @RequestBody YardRequestDTO yardRequestDTO) {
+        YardResponseDTO updatedYard = yardService.updateYard(id, yardRequestDTO);
+        return ResponseEntity.ok(updatedYard);
     }
     @GetMapping("/{id}")
     public ResponseEntity<YardResponseDTO> getYardById(@PathVariable Integer id) {
