@@ -32,9 +32,9 @@ public class UserController {
         return API.Response.success(data);
     }
 
-    @GetMapping("/ping2/{test}")
+    @GetMapping("/ping2/{application.properties.example}")
     public API.Response<?> PingV2(@PathVariable int test) {
-        String data = "V2...Pong...Pong...Pong...test:"+test;
+        String data = "V2...Pong...Pong...Pong...application.properties.example:"+test;
         LogUtil.logInfo("Pong...Pong...Pong...");
         return API.Response.success(data);
     }
