@@ -4,7 +4,6 @@ import com.main.badminton.booking.entity.Role;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.repository.RoleRepo;
 import com.main.badminton.booking.repository.UserRepo;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +24,6 @@ public class Application  implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		// Load environment variables from .env file
-		Dotenv dotenv = Dotenv.load();
 
 		SpringApplication.run(Application.class, args);
 	}
