@@ -24,38 +24,24 @@ import lombok.RequiredArgsConstructor;
 public class YardController {
 
     @Autowired
-    private final YardConverter yardConverter;
-    @Autowired
     private final IYardService yardService;
 
     @GetMapping()
     public API.Response<List<YardResponseDTO>> getAllYards(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber){
-        List<Yards> yards = yardService.getAllYards(pageNumber);
-        List<YardResponseDTO> yardResponseDTOS = yards
-                .stream()
-                .map(yardConverter::toYardResponseDTO)
-                .toList();
+        List<YardResponseDTO> yardResponseDTOS = yardService.getAllYards(pageNumber);
         return API.Response.success(yardResponseDTOS);
     }
 
     @GetMapping("/active")
     public API.Response<List<YardResponseDTO>> getAllActiveYards(@RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber){
-        List<Yards> yards = yardService.getAllYardsByActiveStatus(pageNumber);
-        List<YardResponseDTO> yardResponseDTOS = yards
-                .stream()
-                .map(yardConverter::toYardResponseDTO)
-                .toList();
+        List<YardResponseDTO> yardResponseDTOS = yardService.getAllYardsByActiveStatus(pageNumber);
         return API.Response.success(yardResponseDTOS);
     }
 
     @GetMapping("/search")
     public API.Response<List<YardResponseDTO>> getYardByName(@RequestParam(name = "name") String name,
                                                    @RequestParam(name = "pageNumber", defaultValue = "0") int pageNumber){
-        List<Yards> yards = yardService.getYardsByName(name, pageNumber);
-        List<YardResponseDTO> yardResponseDTOS = yards
-                .stream()
-                .map(yardConverter::toYardResponseDTO)
-                .toList();
+        List<YardResponseDTO> yardResponseDTOS = yardService.getYardsByName(name, pageNumber);
         return API.Response.success(yardResponseDTOS);
     }
 }

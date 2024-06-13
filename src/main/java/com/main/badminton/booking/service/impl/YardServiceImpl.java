@@ -2,6 +2,8 @@ package com.main.badminton.booking.service.impl;
 
 import java.util.List;
 
+import com.main.badminton.booking.converter.YardConverter;
+import com.main.badminton.booking.dto.response.YardResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -20,23 +22,38 @@ public class YardServiceImpl implements IYardService{
 
     @Autowired
     private final YardRepository yardRepository;
+
+    @Autowired
+    private final YardConverter yardConverter;
     @Value("${page.size}")
     public int pageSize;
     @Override
-    public List<Yards> getAllYards(int pageNumber) {
+    public List<YardResponseDTO> getAllYards(int pageNumber) {
         Pageable page = PageRequest.of(pageNumber, pageSize);
-        return yardRepository.findAll(page).stream().toList();
+        List<Yards> yards = yardRepository.findAll(page).stream().toList();
+        return yards
+                .stream()
+                .map(yardConverter::toYardResponseDTO)
+                .toList();
     }
 
     @Override
-    public List<Yards> getAllYardsByActiveStatus(int pageNumber) {
+    public List<YardResponseDTO> getAllYardsByActiveStatus(int pageNumber) {
         Pageable page = PageRequest.of(pageNumber, pageSize);
-        return yardRepository.findAllByActiveStatus(page).stream().toList();
+        List<Yards> yards = yardRepository.findAllByActiveStatus(page);
+        return yards
+                .stream()
+                .map(yardConverter::toYardResponseDTO)
+                .toList();
     }
 
     @Override
-    public List<Yards> getYardsByName(String name, int pageNumber) {
+    public List<YardResponseDTO> getYardsByName(String name, int pageNumber) {
         Pageable page = PageRequest.of(pageNumber, pageSize);
-        return yardRepository.findYardByName(name, page);
+        List<Yards> yards = yardRepository.findYardByName(name, page);
+        return yards
+                .stream()
+                .map(yardConverter::toYardResponseDTO)
+                .toList();
     }
 }
