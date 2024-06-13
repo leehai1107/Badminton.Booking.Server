@@ -15,6 +15,7 @@ import com.main.badminton.booking.service.interfc.AuthenticationService;
 import com.main.badminton.booking.service.interfc.JWTService;
 import com.main.badminton.booking.token.Token;
 import com.main.badminton.booking.token.TokenType;
+import com.main.badminton.booking.utils.wapper.API;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
-
+    @Autowired
     private final UserRepo userRepo;
 
     private final PasswordEncoder passwordEncoder;
@@ -46,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private final TokenRepository tokenRepository;
+
 //    private static final Logger logger = LoggerFactory.getLogger(LogoutService.class);
 
 
@@ -54,8 +56,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-
-
+        user.setEmail(signUpRequest.getEmail());
+        user.setFirstName(signUpRequest.getFirstName());
+        user.setLastName(signUpRequest.getLastName());
         Role role = roleRepo.findById(signUpRequest.getRoleId())
                 .orElseThrow(() -> new IllegalArgumentException("Role not found"));
 
@@ -159,6 +162,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
+    @Override
+    public ResponseEntity<Object> getUserInformation(HttpServletRequest request)  {
+        String token = extractTokenFromHeader(request);
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT token found in the request header");
+        }
+
+        final Token accessToken = tokenRepository.findByToken(token).orElse(null);
+        if (accessToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT token");
+        }
+
+        String username = jwtService.extractUsername(token);
+        var user = userRepo.findByUsername(username).orElse(null);
+        if (user == null || !jwtService.isTokenValid(token, user) || accessToken.isRevoked() || accessToken.isExpired()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT token has expired and revoked");
+        }
+
+        return ResponseEntity.ok(API.Response.success(user));
+    }
+
 
     private void revokeAllUserToken(User user){
         var validUserToken = tokenRepository.findAllValidTokensByUser((long) user.getId());
@@ -168,6 +192,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             token.setRevoked(true);
         });
         tokenRepository.saveAll(validUserToken);
+    }
+
+    public String extractTokenFromHeader(HttpServletRequest request) {
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 
 

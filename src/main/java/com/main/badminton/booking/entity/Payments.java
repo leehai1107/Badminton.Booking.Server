@@ -23,12 +23,16 @@ public class Payments {
     @Column(name = "final_price")
     private Double finalPrice;
 
+    @Column(name = "is_tournament")
+    private Boolean iStournament;
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private BookingOrders bookingOrders;
 
     @OneToMany(mappedBy = "payments", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FeedBacks> feedBacks;
+
+
 
 
 }
