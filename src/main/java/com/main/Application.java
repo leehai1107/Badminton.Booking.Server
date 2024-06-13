@@ -23,6 +23,8 @@ public class Application  implements CommandLineRunner {
 	private RoleRepo roleRepo;
 
 	public static void main(String[] args) {
+		// Load environment variables from .env file
+
 		SpringApplication.run(Application.class, args);
 	}
 	public void run(String... args){

@@ -1,23 +1,28 @@
 package com.main.badminton.booking.controller;
 
+import com.main.badminton.booking.dto.request.ChangePasswordRequest;
 import com.main.badminton.booking.dto.request.UserRequestDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
 import com.main.badminton.booking.service.impl.UserServiceImpl;
+import com.main.badminton.booking.service.interfc.UserService;
 import com.main.badminton.booking.utils.logger.LogUtil;
 import com.main.badminton.booking.utils.wapper.API;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequestMapping("api/v1/user")
 @RestController
+@RequiredArgsConstructor
 public class UserController {
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
 //    @PreAuthorize("hasRole('USER')")
     @GetMapping("/ping")
@@ -29,7 +34,7 @@ public class UserController {
 
     @GetMapping("/ping2/{test}")
     public API.Response<?> PingV2(@PathVariable int test) {
-        String data = "V2...Pong...Pong...Pong...test:"+test;
+        String data = "V2...Pong...Pong...Pong...:"+test;
         LogUtil.logInfo("Pong...Pong...Pong...");
         return API.Response.success(data);
     }
@@ -68,5 +73,11 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }
+    }
+    @PatchMapping
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+    Principal connectedUser){
+        userService.changePassword(request, connectedUser);
+        return ResponseEntity.ok(API.Response.success(null));
     }
 }
