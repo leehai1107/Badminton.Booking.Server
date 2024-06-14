@@ -93,5 +93,4 @@ public class Yards {
             inverseJoinColumns = @JoinColumn(name = "type_id")
     )
     private List<Types> types = new ArrayList<>();
-    private Boolean status;
 }

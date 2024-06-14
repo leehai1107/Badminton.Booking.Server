@@ -12,7 +12,7 @@ public class YardRequestDTO {
     private Integer provinceId;
     private String description;
     private Boolean status;
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+    private LocalDate openTime;
+    private LocalDate closeTime;
     private Integer hostId;
 }
