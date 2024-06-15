@@ -1,5 +1,6 @@
 package com.main.badminton.booking.converter;
 
+import com.main.badminton.booking.dto.request.PaymentRequestDTO;
 import com.main.badminton.booking.dto.response.PaymentResponseDTO;
 import com.main.badminton.booking.entity.Payments;
 import org.modelmapper.ModelMapper;
@@ -18,5 +19,9 @@ public class PaymentConverter {
             dto.setBookingOrderId(payments.getBookingOrders().getId());
         }
         return dto;
+    }
+
+    public Payments convertToEntity(PaymentRequestDTO paymentRequestDTO) {
+        return modelMapper.map(paymentRequestDTO, Payments.class);
     }
 }

@@ -2,12 +2,15 @@ package com.main.badminton.booking.service.impl;
 
 import com.main.badminton.booking.converter.UserConverter;
 import com.main.badminton.booking.dto.request.ChangePasswordRequest;
+import com.main.badminton.booking.dto.request.UserDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.service.interfc.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,5 +92,26 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
          //save new password
         userRepo.save(user);
+    }
+    @Override
+    public UserResponseDTO updateUserInfo(Integer id, UserDTO userDTO) {
+        Optional<User> userOptional = userRepo.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // Update the fields except for password and status
+            user.setGender(userDTO.getGender());
+            user.setDob(userDTO.getDob());
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            userRepo.save(user);
+            return userConverter.convertToDto(user);
+        } else {
+            throw new RuntimeException("User not found with id " + id);
+        }
+    }
+    @Override
+    public Page<UserResponseDTO> getAllUsers(Pageable pageable) {
+        Page<User> users = userRepo.findAll(pageable);
+        return users.map(userConverter::convertToDto);
     }
 }

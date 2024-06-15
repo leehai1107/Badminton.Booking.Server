@@ -1,6 +1,7 @@
 package com.main.badminton.booking.controller;
 
 import com.main.badminton.booking.dto.request.ChangePasswordRequest;
+import com.main.badminton.booking.dto.request.UserDTO;
 import com.main.badminton.booking.dto.request.UserRequestDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
 import com.main.badminton.booking.service.impl.UserServiceImpl;
@@ -9,6 +10,9 @@ import com.main.badminton.booking.utils.logger.LogUtil;
 import com.main.badminton.booking.utils.wapper.API;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,5 +83,19 @@ public class UserController {
     Principal connectedUser){
         userService.changePassword(request, connectedUser);
         return ResponseEntity.ok(API.Response.success(null));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUserInfo(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
+        UserResponseDTO updatedUser = userService.updateUserInfo(id, userDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+    @GetMapping
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserResponseDTO> users = userService.getAllUsers(pageable);
+        return ResponseEntity.ok(users.getContent());
     }
 }
