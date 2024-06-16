@@ -17,7 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
 @Builder
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
+public class    User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -55,11 +55,11 @@ public class User implements UserDetails {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalTime createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    private LocalTime updateDate;
 
     @Column(name = "create_by", nullable = false, updatable = false)
     @CreatedBy
