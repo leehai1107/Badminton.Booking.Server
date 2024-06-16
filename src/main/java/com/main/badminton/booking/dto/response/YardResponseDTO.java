@@ -1,6 +1,5 @@
 package com.main.badminton.booking.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -21,4 +20,5 @@ public class YardResponseDTO {
     private LocalTime updateDate;
     private Integer createBy;
     private Integer updateBy;
+    private Integer hostId;
 }

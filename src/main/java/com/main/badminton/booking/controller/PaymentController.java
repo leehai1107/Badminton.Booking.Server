@@ -1,5 +1,6 @@
 package com.main.badminton.booking.controller;
 
+import com.main.badminton.booking.dto.request.PaymentRequestDTO;
 import com.main.badminton.booking.dto.response.PaymentResponseDTO;
 import com.main.badminton.booking.service.interfc.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,15 @@ public class PaymentController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(paymentResponseDTOs);
+    }
+    @GetMapping
+    public ResponseEntity<List<PaymentResponseDTO>> getAllPayments() {
+        List<PaymentResponseDTO> payments = paymentService.getAllPayments();
+        return ResponseEntity.ok(payments);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Integer id, @RequestBody PaymentRequestDTO paymentRequestDTO) {
+        PaymentResponseDTO updatedPayment = paymentService.updatePayment(id, paymentRequestDTO);
+        return ResponseEntity.ok(updatedPayment);
     }
 }

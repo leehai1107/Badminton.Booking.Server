@@ -13,15 +13,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-public class Application implements CommandLineRunner {
-    @Autowired
-    private UserRepo userRepository;
+public class Application  implements CommandLineRunner {
+	@Autowired
+	private UserRepo userRepository;
 
-    @Autowired
-    private RoleRepo roleRepo;
+	@Autowired
+	private RoleRepo roleRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -53,17 +52,17 @@ public class Application implements CommandLineRunner {
             roleRepo.saveAll(roles);
         }
 
-        Role role = roleRepo.findById(1).orElseThrow();
-        User adminAccount = userRepository.findByRole(role);
+		Role role = roleRepo.findById(1).orElseThrow();
+		User adminAccount = userRepository.findByRole(role);
 
-        if (null == adminAccount) {
-            User user = new User();
-            user.setCreateBy(0);
-            user.setUsername("admin");
-            user.setEmail("admin@gmail.com");
-            user.setRole(role);
-            user.setPassword(new BCryptPasswordEncoder().encode("123"));
-            userRepository.save(user);
-        }
-    }
+		if(null == adminAccount ){
+			User user = new User();
+			user.setCreateBy(0);
+			user.setUsername("admin");
+			user.setEmail("admin@gmail.com");
+			user.setRole(role);
+			user.setPassword(new BCryptPasswordEncoder().encode("123"));
+			userRepository.save(user);
+		}
+	}
 }
