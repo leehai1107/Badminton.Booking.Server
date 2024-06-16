@@ -11,7 +11,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -45,10 +44,10 @@ public class Yards {
     private Boolean status;
 
     @Column(name = "open_time")
-    private LocalDate openTime;
+    private LocalDateTime openTime;
 
     @Column(name = "close_time")
-    private LocalDate closeTime;
+    private LocalDateTime closeTime;
 
     @ManyToOne
     @JoinColumn(name = "host_id")

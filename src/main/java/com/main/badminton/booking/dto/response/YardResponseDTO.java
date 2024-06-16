@@ -11,10 +11,11 @@ public class YardResponseDTO {
     private String address;
     private Integer provinceId;
     private String description;
+    private Boolean status;
     private LocalDateTime openTime;
     private LocalDateTime closeTime;
-    private Integer hostId;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-    private Boolean status;
+    private Integer createBy;
+    private Integer updateBy;
 }
