@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,12 +72,12 @@ public class Yards {
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime createDate;
+    private LocalDate createDate;
 
     @Column(name = "update_date", insertable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     @LastModifiedDate
-    private LocalTime updateDate;
+    private LocalDate updateDate;
 
 
     @Column(name = "create_by", nullable = false, updatable = false)
