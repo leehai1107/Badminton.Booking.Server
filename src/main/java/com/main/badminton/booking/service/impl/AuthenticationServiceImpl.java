@@ -5,6 +5,7 @@ import com.main.badminton.booking.config.ApplicationAuditing;
 import com.main.badminton.booking.dto.request.RefreshTokenRequest;
 import com.main.badminton.booking.dto.request.SignInRequest;
 import com.main.badminton.booking.dto.request.SignUpRequest;
+import com.main.badminton.booking.dto.request.UserProfileDTO;
 import com.main.badminton.booking.dto.response.JwtAuthenticationResponse;
 import com.main.badminton.booking.entity.Role;
 import com.main.badminton.booking.entity.User;
@@ -181,6 +182,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         return ResponseEntity.ok(API.Response.success(user));
+    }
+
+    @Override
+    public UserProfileDTO updateUserInfo(Integer id, UserProfileDTO userProfileDTO) {
+        User user = userRepo.findById(id).orElse(null);
+        if(user != null){
+            user.setUsername(userProfileDTO.getUserName());
+            user.setLastName(userProfileDTO.getLastName());
+            user.setFirstName(userProfileDTO.getFirstName());
+            user.setEmail(userProfileDTO.getEmail());
+            user.setDob(userProfileDTO.getDob());
+            user.setGender(userProfileDTO.getGender());
+
+            User userResponse = userRepo.save(user);
+            return mapToUserProfileDto(userResponse);
+        } else {
+            return null;
+        }
+    }
+    private UserProfileDTO mapToUserProfileDto(User user) {
+        UserProfileDTO userProfileDto = new UserProfileDTO();
+        userProfileDto.setFirstName(user.getFirstName());
+        userProfileDto.setLastName(user.getLastName());
+        userProfileDto.setGender(user.getGender());
+        userProfileDto.setEmail(user.getEmail());
+        userProfileDto.setDob(user.getDob());
+        userProfileDto.setUserName(user.getUsername());
+        return userProfileDto;
     }
 
 

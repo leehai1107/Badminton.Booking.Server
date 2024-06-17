@@ -51,8 +51,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**", "/api/v1/admin/**"
-                                , "/api/v1/user/**", "/api/v1/yards/**","/swagger-ui/**", "/v3/api-docs/**")
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/admin/**", "/api/v1/user/**", "/api/v1/yards/**",
+                                "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.accessDeniedHandler(customAccessDeniedHandler)

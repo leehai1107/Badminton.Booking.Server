@@ -37,18 +37,18 @@ public class Schedules {
     private ScheduleType scheduleType;
 
     @Column(name = "start_time")
-    private LocalDateTime    startTime;
+    private LocalTime startTime;
 
     @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private LocalTime endTime;
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalTime createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    private LocalTime updateDate;
 
     @Column(name = "create_by", nullable = false, updatable = false)
     @CreatedBy

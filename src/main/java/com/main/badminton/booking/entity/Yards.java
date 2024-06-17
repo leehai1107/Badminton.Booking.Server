@@ -1,5 +1,6 @@
 package com.main.badminton.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +12,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +44,10 @@ public class Yards {
     private Boolean status;
 
     @Column(name = "open_time")
-    private LocalDate openTime;
+    private LocalTime openTime;
 
     @Column(name = "close_time")
-    private LocalDate closeTime;
+    private LocalTime closeTime;
 
     @ManyToOne
     @JoinColumn(name = "host_id")
@@ -71,11 +70,13 @@ public class Yards {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime createDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime createDate;
 
     @Column(name = "update_date", insertable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    private LocalTime updateDate;
 
 
     @Column(name = "create_by", nullable = false, updatable = false)

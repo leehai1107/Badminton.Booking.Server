@@ -1,12 +1,12 @@
 package com.main.badminton.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -24,20 +24,23 @@ public class YardCheckins {
     private String status;
 
     @Column(name = "checkin_time")
-    private LocalDateTime checkInTime;
+    private LocalTime checkInTime;
 
     @Column(name = "checkout_time")
-    private LocalDateTime checkOutTime;
+    private LocalTime checkOutTime;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id")
     private Payments payments;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "checkin_by")
     private User checkInBy;
 }

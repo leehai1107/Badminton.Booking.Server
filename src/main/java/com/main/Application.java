@@ -22,31 +22,35 @@ public class Application  implements CommandLineRunner {
 	@Autowired
 	private RoleRepo roleRepo;
 
-	public static void main(String[] args) {
-		// Load environment variables from .env file
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-		SpringApplication.run(Application.class, args);
-	}
-	public void run(String... args){
-		if(roleRepo.count() == 0){
-			List<Role> roles = new ArrayList<>();
-			Role adminRole = Role.builder()
-					.id(1)
-					.name("ROLE_ADMIN")
-					.build();
-			Role userRole = Role.builder()
-					.id(2)
-					.name("ROLE_USER")
-					.build();
-			Role staffRole = Role.builder()
-					.id(3)
-					.name("ROLE_STAFF")
-					.build();
-			roles.add(adminRole);
-			roles.add(userRole);
-			roles.add(staffRole);
-			roleRepo.saveAll(roles);
-		}
+    public void run(String... args) {
+        if (roleRepo.count() == 0) {
+            List<Role> roles = new ArrayList<>();
+            Role adminRole = Role.builder()
+                    .id(1)
+                    .name("ROLE_ADMIN")
+                    .build();
+            Role userRole = Role.builder()
+                    .id(2)
+                    .name("ROLE_USER")
+                    .build();
+            Role staffRole = Role.builder()
+                    .id(3)
+                    .name("ROLE_STAFF")
+                    .build();
+            Role ownerRole = Role.builder()
+                    .id(4)
+                    .name("ROLE_OWNER")
+                    .build();
+            roles.add(adminRole);
+            roles.add(userRole);
+            roles.add(staffRole);
+            roles.add(ownerRole);
+            roleRepo.saveAll(roles);
+        }
 
 		Role role = roleRepo.findById(1).orElseThrow();
 		User adminAccount = userRepository.findByRole(role);
