@@ -10,6 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -39,11 +41,11 @@ public class Slots {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    private LocalTime createDate;
+    private LocalDate createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
-    private LocalTime updateDate;
+    private LocalDate updateDate;
 
     @Column(name = "create_by", nullable = false, updatable = false)
     @CreatedBy

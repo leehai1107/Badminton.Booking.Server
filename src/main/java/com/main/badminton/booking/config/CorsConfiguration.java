@@ -9,10 +9,10 @@ public class CorsConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Apply CORS configuration to all endpoints
-                .allowedOriginPatterns("*") // Allow requests from all origins (you can restrict this as needed)
-                .allowedMethods("*") // Allowed HTTP methods
-                .allowedHeaders("*") // Allow all headers
-                .allowCredentials(true) // Allow sending of cookies
-                .maxAge(3600); // Max age of the CORS pre-flight response cache
+                    .allowedOriginPatterns("*") // Allow requests from all origins (you can restrict this as needed)
+                    .allowedMethods("*") // Allowed HTTP methods
+                    .allowedHeaders("*") // Allow all headers
+                    .allowCredentials(true) // Allow sending of cookies
+                    .maxAge(3600); // Max age of the CORS pre-flight response cache
     }
 }
