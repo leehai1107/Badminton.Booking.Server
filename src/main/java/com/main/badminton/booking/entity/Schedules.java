@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -37,18 +38,18 @@ public class Schedules {
     private ScheduleType scheduleType;
 
     @Column(name = "start_time")
-    private LocalDateTime    startTime;
+    private LocalTime startTime;
 
     @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private LocalTime endTime;
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    private LocalDate updateDate;
 
     @Column(name = "create_by", nullable = false, updatable = false)
     @CreatedBy
