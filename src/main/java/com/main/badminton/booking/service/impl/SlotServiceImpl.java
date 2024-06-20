@@ -1,7 +1,9 @@
 package com.main.badminton.booking.service.impl;
 
 import com.main.badminton.booking.config.ApplicationAuditing;
+import com.main.badminton.booking.converter.SlotConverter;
 import com.main.badminton.booking.dto.request.SlotRequestDTO;
+import com.main.badminton.booking.dto.response.SlotResponseDTO;
 import com.main.badminton.booking.entity.Slots;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.repository.SlotRepository;
@@ -10,12 +12,17 @@ import com.main.badminton.booking.repository.YardRepository;
 import com.main.badminton.booking.service.interfc.SlotService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.net.http.HttpRequest;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SlotServiceImpl implements SlotService {
@@ -27,7 +34,11 @@ public class SlotServiceImpl implements SlotService {
     private YardRepository yardRepository;
 
     @Autowired
+    private SlotConverter slotConverter;
+    @Autowired
     private ApplicationAuditing applicationAuditing;
+    @Value("${page.size}")
+    public int pageSize;
 
     @Override
     public String createSlot(Integer yardId, SlotRequestDTO slotRequestDTO) {
@@ -42,7 +53,7 @@ public class SlotServiceImpl implements SlotService {
     }
 
     @Override
-    public SlotRequestDTO updateSlot(Long slotId, SlotRequestDTO slotRequestDTO) {
+    public SlotRequestDTO updateSlot(Integer slotId, SlotRequestDTO slotRequestDTO) {
         User user = userRepo.findById(applicationAuditing.getCurrentAuditor().get()).orElse(null);
         if (user.getRole().getId() != 2 && user.getRole().getId() != 3) {
             Slots saved = slotRepository.findById(slotId).get();
@@ -55,6 +66,13 @@ public class SlotServiceImpl implements SlotService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<SlotResponseDTO> getSlotsByYardId(Integer yardId, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        List<Slots> slots = slotRepository.findByYardId(yardId, pageable);
+        return slots.stream().map(s -> slotConverter.toResponseDTO(s)).toList();
     }
 
     private SlotRequestDTO mapToDto(Slots slots){
