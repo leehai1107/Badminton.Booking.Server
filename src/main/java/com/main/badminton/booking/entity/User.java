@@ -72,6 +72,7 @@ public class    User implements UserDetails {
     @JsonIgnore
     private Integer updateBy;
 
+
     @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "role_id")

@@ -75,6 +75,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByEmail2(String email) {
+        return  userRepo.findByEmail(email).orElseThrow(() -> new IllegalStateException("Not found"));
+    }
+
+    @Override
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
         var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
         //check ì the current password is correct

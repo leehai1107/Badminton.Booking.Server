@@ -33,6 +33,8 @@ public class UserController {
         return API.Response.success(data);
     }
 
+
+
     @GetMapping("/ping2/{test}")
     public API.Response<?> PingV2(@PathVariable int test) {
         String data = "V2...Pong...Pong...Pong...:"+test;
@@ -81,6 +83,8 @@ public class UserController {
         userService.changePassword(request, connectedUser);
         return ResponseEntity.ok(API.Response.success(null));
     }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUserInfo(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
         UserResponseDTO updatedUser = userService.updateUserInfo(id, userDTO);
