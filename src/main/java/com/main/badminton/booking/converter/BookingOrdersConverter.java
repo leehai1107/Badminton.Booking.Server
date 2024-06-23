@@ -15,11 +15,11 @@ public class BookingOrdersConverter {
         this.modelMapper = modelMapper;
     }
 
-    public BookingOrdersResponseDTO entityToResponseDto(BookingOrders bookingOrders) {
-        return modelMapper.map(bookingOrders, BookingOrdersResponseDTO.class);
+    public BookingOrders requestDtoToEntity(BookingOrdersRequestDTO requestDTO) {
+        return modelMapper.map(requestDTO, BookingOrders.class);
     }
 
-    public BookingOrders requestDtoToEntity(BookingOrdersRequestDTO bookingOrdersRequestDTO) {
-        return modelMapper.map(bookingOrdersRequestDTO, BookingOrders.class);
+    public BookingOrdersResponseDTO entityToResponseDto(BookingOrders entity) {
+        return modelMapper.map(entity, BookingOrdersResponseDTO.class);
     }
 }

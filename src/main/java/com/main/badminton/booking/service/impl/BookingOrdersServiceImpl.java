@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 public class BookingOrdersServiceImpl implements BookingOrdersService {
 
@@ -24,6 +26,7 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
     @Transactional
     public BookingOrdersResponseDTO createBookingOrder(BookingOrdersRequestDTO bookingOrdersRequestDTO) {
         BookingOrders bookingOrders = bookingOrdersConverter.requestDtoToEntity(bookingOrdersRequestDTO);
+        bookingOrders.setBookingAt(LocalDate.now());  // Set the current date
         BookingOrders savedBookingOrders = bookingOrdersRepository.save(bookingOrders);
         return bookingOrdersConverter.entityToResponseDto(savedBookingOrders);
     }
