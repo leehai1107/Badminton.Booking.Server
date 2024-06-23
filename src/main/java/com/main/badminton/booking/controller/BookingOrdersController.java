@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/bookingOrders")
 public class BookingOrdersController {
@@ -15,9 +18,13 @@ public class BookingOrdersController {
     @Autowired
     private BookingOrdersService bookingOrdersService;
 
-    @PostMapping
-    public ResponseEntity<BookingOrdersResponseDTO> createBookingOrder(@RequestBody BookingOrdersRequestDTO bookingOrdersRequestDTO) {
-        BookingOrdersResponseDTO createdBookingOrder = bookingOrdersService.createBookingOrder(bookingOrdersRequestDTO);
-        return new ResponseEntity<>(createdBookingOrder, HttpStatus.CREATED);
+    @PostMapping("/bulk")
+    public ResponseEntity<List<BookingOrdersResponseDTO>> createBookingOrders(@RequestBody List<BookingOrdersRequestDTO> bookingOrdersRequestDTOList) {
+        List<BookingOrdersResponseDTO> createdBookingOrders = new ArrayList<>();
+        for (BookingOrdersRequestDTO requestDTO : bookingOrdersRequestDTOList) {
+            BookingOrdersResponseDTO createdBookingOrder = bookingOrdersService.createBookingOrder(requestDTO);
+            createdBookingOrders.add(createdBookingOrder);
+        }
+        return new ResponseEntity<>(createdBookingOrders, HttpStatus.CREATED);
     }
 }
