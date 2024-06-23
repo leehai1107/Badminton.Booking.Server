@@ -2,7 +2,7 @@ package com.main.badminton.booking.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.badminton.booking.config.ApplicationAuditing;
-import com.main.badminton.booking.dto.request.RefreshTokenRequest;
+
 import com.main.badminton.booking.dto.request.SignInRequest;
 import com.main.badminton.booking.dto.request.SignUpRequest;
 import com.main.badminton.booking.dto.request.UserProfileDTO;
@@ -16,7 +16,6 @@ import com.main.badminton.booking.service.interfc.AuthenticationService;
 import com.main.badminton.booking.service.interfc.JWTService;
 import com.main.badminton.booking.token.Token;
 import com.main.badminton.booking.token.TokenType;
-import com.main.badminton.booking.utils.wapper.API;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +26,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -107,12 +108,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtAuthenticationResponse;
     }
 
+//    @Override
+//    public JwtAuthenticationResponse getTokenAfterOAuthLogin(OAuth2User oAuth2User) {
+//        String email = oAuth2User.getAttribute("email");
+//        var user = userRepo.findByEmail(email).orElseThrow(() -> new IllegalStateException("Not found"));
+//        var jwtToken = jwtService.generateToken(user);
+//        var refreshToken = jwtService.generateRefreshToken(user);
+//        revokeAllUserToken(user);
+//        saveUserToken(user, jwtToken, refreshToken);
+//
+//        JwtAuthenticationResponse jwtAuthenticationResponse =
+//                JwtAuthenticationResponse.builder()
+//                        .token(jwtToken)
+//                        .refreshToken(refreshToken)
+//                        .build();
+//        return jwtAuthenticationResponse; // Return token as response body (you might want to wrap it in a JSON object)
+//    }
+
+
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshedToken;
         final String username;
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("text/plain");
             try {
@@ -127,10 +146,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         username = jwtService.extractUsername(refreshedToken);
         final Token currentRefreshedToken = tokenRepository.findByRefreshToken(refreshedToken).get();
 
-        if(username != null){
+        if (username != null) {
             var user = this.userRepo.findByUsername(username).orElseThrow();
-            if((jwtService.isTokenValid(refreshedToken, user)) &&
-            !currentRefreshedToken.isRevoked() && !currentRefreshedToken.isExpired()){
+            if ((jwtService.isTokenValid(refreshedToken, user)) &&
+                    !currentRefreshedToken.isRevoked() && !currentRefreshedToken.isExpired()) {
                 var accessToken = jwtService.generateToken(user);
                 var authResponse = JwtAuthenticationResponse.builder()
                         .token(accessToken)
@@ -164,7 +183,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity<Object> getUserInformation(HttpServletRequest request)  {
+    public Object getUserInformation(HttpServletRequest request) {
         String token = extractTokenFromHeader(request);
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT token found in the request header");
@@ -181,13 +200,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT token has expired and revoked");
         }
 
-        return ResponseEntity.ok(API.Response.success(user));
+        return user;
     }
 
     @Override
     public UserProfileDTO updateUserInfo(Integer id, UserProfileDTO userProfileDTO) {
         User user = userRepo.findById(id).orElse(null);
-        if(user != null){
+        if (user != null) {
             user.setUsername(userProfileDTO.getUserName());
             user.setLastName(userProfileDTO.getLastName());
             user.setFirstName(userProfileDTO.getFirstName());
@@ -201,6 +220,59 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return null;
         }
     }
+
+    @Override
+    public JwtAuthenticationResponse getTokenAndRefreshToken(UserDetails userDetails) throws BadRequestException {
+        JwtAuthenticationResponse res = new JwtAuthenticationResponse();
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            User user = userRepo.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("not found"));
+            if (user != null) {
+                Token token = tokenRepository.findAllValidTokensByUser2((long) user.getId());
+                res.setToken(token.getToken());
+                res.setRefreshToken(token.getRefreshToken());
+            } else {
+                throw new BadRequestException("Exception");
+            }
+            return res;
+        } else {
+            throw new BadRequestException("Exception");
+        }
+    }
+
+    @Override
+    public String signingoogle(String email) {
+        try {
+            Optional<User> userDetails = userRepo.findByEmail(email);
+            User user = new User();
+            if (userDetails.isEmpty()) {
+                user.setEmail(email);
+                user.setRole(roleRepo.findById(2).get());
+                user.setCreateBy(0);
+                user.setUsername(email);
+                userRepo.save(user);
+//                user.setEn
+            } else {
+                user = userDetails.get();
+            }
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(user);
+
+            revokeAllUserToken(user);
+            saveUserToken(user, jwtToken, refreshToken);
+
+//            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+//            jwtAuthenticationResponse.setRefreshToken(refreshToken);
+//            jwtAuthenticationResponse.setToken(jwtToken);
+
+//            return ResponseEntity.ok(jwtAuthenticationResponse);
+            return jwtToken;
+        } catch (Exception e){
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+
     private UserProfileDTO mapToUserProfileDto(User user) {
         UserProfileDTO userProfileDto = new UserProfileDTO();
         userProfileDto.setFirstName(user.getFirstName());
@@ -213,9 +285,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private void revokeAllUserToken(User user){
+    private void revokeAllUserToken(User user) {
         var validUserToken = tokenRepository.findAllValidTokensByUser((long) user.getId());
-        if(validUserToken.isEmpty()) return;
+        if (validUserToken.isEmpty()) return;
         validUserToken.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
@@ -223,7 +295,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         tokenRepository.saveAll(validUserToken);
     }
 
-    public String extractTokenFromHeader(HttpServletRequest request) {
+    private String extractTokenFromHeader(HttpServletRequest request) {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
@@ -232,7 +304,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private void saveUserToken(User user, String jwtToken, String jwtRefreshToken){
+    private void saveUserToken(User user, String jwtToken, String jwtRefreshToken) {
         Token token = Token.builder()
                 .user(user)
                 .token(jwtToken)
