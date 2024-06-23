@@ -4,15 +4,19 @@ import com.main.badminton.booking.entity.Role;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.repository.RoleRepo;
 import com.main.badminton.booking.repository.UserRepo;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import io.swagger.v3.oas.annotations.servers.Server;
 
 import java.util.ArrayList;
 import java.util.List;
+
+@OpenAPIDefinition(servers = {@Server(url = "/", description = "Default Server URL")})
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class Application  implements CommandLineRunner {
