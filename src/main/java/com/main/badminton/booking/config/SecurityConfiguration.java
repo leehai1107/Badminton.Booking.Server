@@ -74,7 +74,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**", "/api/v1/yards/**",
                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                                "/api/payments/**",
+                                "/api/payments/**","/api/v1/bookingOrders/**",
                                 "/swagger-resources/**", "/webjars/**", "/oauth2/authorization/google", "/login/oauth2/code/google")
                         .permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
