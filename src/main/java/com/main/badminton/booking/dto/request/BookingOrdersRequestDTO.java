@@ -5,19 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class BookingOrdersRequestDTO {
-    private String bookingAt;
-    private String status;
     private Integer yardId;
     private Integer userId;
-    private Integer scheduleId;
     private Integer slotId;
-    private LocalTime tournamentStart;
-    private LocalTime tournamentEnd;
+    private LocalDate tournamentStart;
+    private LocalDate tournamentEnd;
 }

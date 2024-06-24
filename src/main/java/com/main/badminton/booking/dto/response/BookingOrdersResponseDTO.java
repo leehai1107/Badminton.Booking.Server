@@ -12,13 +12,9 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 public class BookingOrdersResponseDTO {
-    private Integer id;
-    private String bookingAt;
-    private String status;
     private Integer yardId;
     private Integer userId;
     private Integer scheduleId;
     private Integer slotId;
-    private LocalTime tournamentStart;
-    private LocalTime tournamentEnd;
+    private String status;
 }

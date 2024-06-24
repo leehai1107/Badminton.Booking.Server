@@ -1,11 +1,14 @@
 package com.main.badminton.booking.service.impl;
 
+import com.main.badminton.booking.entity.User;
+import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.service.interfc.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,9 @@ public class JWTServiceImpl implements JWTService {
 
     @Value("${jwt.expiration.refresh-token}")
     private long refreshExpiration;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @Override
     public String extractUsername(String token) {
@@ -46,10 +52,12 @@ public class JWTServiceImpl implements JWTService {
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long jwtExpiration) {
+        User user = userRepo.findByUsername(userDetails.getUsername()).get();
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .claim("role", populateAuthorities(userDetails.getAuthorities()))
+                .claim("id", user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)

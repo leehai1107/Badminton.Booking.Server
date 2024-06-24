@@ -24,10 +24,10 @@ public class BookingOrders {
     private Integer id;
 
     @Column(name = "booking_at")
-    private LocalDate bookingAt;
+    private LocalDate bookingAt = LocalDate.now();
 
     @Column(name = "status")
-    private String status;
+    private String status = "pending";
 
     @ManyToOne
     @JoinColumn(name = "yard_id")
@@ -36,10 +36,6 @@ public class BookingOrders {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedules schedules;
 
     @ManyToOne
     @JoinColumn(name = "slot_id")
