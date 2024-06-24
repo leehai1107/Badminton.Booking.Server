@@ -14,7 +14,6 @@ import java.time.LocalDate;
 public class BookingOrdersRequestDTO {
     private Integer yardId;
     private Integer userId;
-    private Integer scheduleId;
     private Integer slotId;
     private LocalDate tournamentStart;
     private LocalDate tournamentEnd;

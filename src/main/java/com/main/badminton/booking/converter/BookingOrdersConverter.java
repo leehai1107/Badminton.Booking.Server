@@ -30,9 +30,6 @@ public BookingOrders requestDtoToEntity(BookingOrdersRequestDTO bookingOrdersReq
     user.setId(bookingOrdersRequestDTO.getUserId());
     bookingOrders.setUser(user);
 
-    Schedules schedules = new Schedules();
-    schedules.setId(bookingOrdersRequestDTO.getScheduleId());
-    bookingOrders.setSchedules(schedules);
 
     Slots slots = new Slots();
     slots.setId(bookingOrdersRequestDTO.getSlotId());
@@ -48,7 +45,6 @@ public BookingOrders requestDtoToEntity(BookingOrdersRequestDTO bookingOrdersReq
 
         dto.setYardId(bookingOrders.getYards().getId());
         dto.setUserId(bookingOrders.getUser().getId());
-        dto.setScheduleId(bookingOrders.getSchedules().getId());
         dto.setSlotId(bookingOrders.getSlots().getId());
         dto.setStatus(bookingOrders.getStatus());
 
