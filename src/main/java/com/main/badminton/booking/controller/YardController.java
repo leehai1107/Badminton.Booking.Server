@@ -19,9 +19,9 @@ public class YardController {
     private YardService yardService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createYard(@RequestBody YardRequestDTO requestDTO) {
-        yardService.createYard(requestDTO);
-        return new ResponseEntity<>("Yard created successfully", HttpStatus.CREATED);
+    public ResponseEntity<YardResponseDTO> createYard(@RequestBody YardRequestDTO yardRequestDTO) {
+        YardResponseDTO yardResponseDTO = yardService.createYard(yardRequestDTO);
+        return ResponseEntity.ok(yardResponseDTO);
     }
 
     @GetMapping("/province-ids")

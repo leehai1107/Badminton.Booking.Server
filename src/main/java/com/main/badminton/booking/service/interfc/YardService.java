@@ -6,7 +6,7 @@ import com.main.badminton.booking.dto.request.YardRequestDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
 
 public interface YardService {
-    void createYard(YardRequestDTO requestDTO);
+    YardResponseDTO createYard(YardRequestDTO yardRequestDTO);
     List<Integer> getProvinceIds();
     YardResponseDTO updateYard(Integer id, YardRequestDTO yardRequestDTO);
     YardResponseDTO getYardById(Integer id);
