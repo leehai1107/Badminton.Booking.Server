@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookingOrders")
@@ -18,13 +18,11 @@ public class BookingOrdersController {
     @Autowired
     private BookingOrdersService bookingOrdersService;
 
-    @PostMapping("/bulk")
-    public ResponseEntity<List<BookingOrdersResponseDTO>> createBookingOrders(@RequestBody List<BookingOrdersRequestDTO> bookingOrdersRequestDTOList) {
-        List<BookingOrdersResponseDTO> createdBookingOrders = new ArrayList<>();
-        for (BookingOrdersRequestDTO requestDTO : bookingOrdersRequestDTOList) {
-            BookingOrdersResponseDTO createdBookingOrder = bookingOrdersService.createBookingOrder(requestDTO);
-            createdBookingOrders.add(createdBookingOrder);
-        }
+    @PostMapping
+    public ResponseEntity<List<BookingOrdersResponseDTO>> createBookingOrders(@RequestBody List<BookingOrdersRequestDTO> bookingOrdersRequestDTOs) {
+        List<BookingOrdersResponseDTO> createdBookingOrders = bookingOrdersRequestDTOs.stream()
+                .map(bookingOrdersService::createBookingOrder)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(createdBookingOrders, HttpStatus.CREATED);
     }
 }

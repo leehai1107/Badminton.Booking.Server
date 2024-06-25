@@ -51,4 +51,15 @@ public class YardConverter {
         yard.setCloseTime(dto.getCloseTime());
     }
 
+    public Yards convertToEntity(YardRequestDTO yardRequestDTO) {
+        Yards yard = modelMapper.map(yardRequestDTO, Yards.class);
+        return yard;
+    }
+
+    public YardResponseDTO convertToDTO(Yards yards) {
+        YardResponseDTO yardResponseDTO = modelMapper.map(yards, YardResponseDTO.class);
+        yardResponseDTO.setHostId(yards.getHost().getId());
+        return yardResponseDTO;
+    }
+
 }

@@ -30,14 +30,23 @@ public class YardServiceImpl implements YardService {
     private final YardConverter yardConverter;
 
     @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
     public YardServiceImpl(YardRepository yardRepository, YardConverter yardConverter) {
         this.yardRepository = yardRepository;
         this.yardConverter = yardConverter;
     }
     @Override
-    public void createYard(YardRequestDTO requestDTO) {
-        Yards yard = yardConverter.toEntity(requestDTO);
-        yardRepository.save(yard);
+    public YardResponseDTO createYard(YardRequestDTO yardRequestDTO) {
+        Yards yard = yardConverter.convertToEntity(yardRequestDTO);
+
+        User host = userRepo.findById(yardRequestDTO.getHostId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid host ID"));
+        yard.setHost(host);
+
+        Yards savedYard = yardRepository.save(yard);
+        return yardConverter.convertToDTO(savedYard);
     }
     @Override
     public List<Integer> getProvinceIds() {
