@@ -18,9 +18,11 @@
     import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
     import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
     import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+    import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
     import org.springframework.web.bind.annotation.*;
 
     import java.io.IOException;
+    import java.util.Map;
 
     @RestController
     @RequestMapping("/api/v1/auth")
@@ -45,16 +47,19 @@
         }
 
 //        @GetMapping("/signingoogle")
-//        public ResponseEntity<?> oauth2Success(OAuth2AuthenticationToken auth2AuthenticationToken) {
-//            String email = auth2AuthenticationToken.getPrincipal().getAttribute("email");
-//            return authenticationService.signingoogle2(email);
+//        public void handleGoogleCallback(OAuth2AuthenticationToken auth2AuthenticationToken, HttpServletResponse response) throws IOException {
+//            Map<String, Object> attributes = auth2AuthenticationToken.getPrincipal().getAttributes();
+//            String email = (String) attributes.get("email");
+//
+//            String accessToken = authenticationService.signingoogle(email);
+//            // Redirect to frontend with token as query parameter
+//            response.sendRedirect("http://localhost:5173/login-success?token=" + accessToken);
 //        }
-        @GetMapping("/signingoogle")
-        public void handleGoogleCallback(OAuth2AuthenticationToken auth2AuthenticationToken, HttpServletResponse response) throws IOException {
-            String email = auth2AuthenticationToken.getPrincipal().getAttribute("email");
 
-            String accessToken = authenticationService.signingoogle(email);
-            // Redirect to frontend with token as query parameter
+
+        @GetMapping("/signingoogle")
+        public void handleGoogleCallback( HttpServletResponse response) throws IOException {
+            String accessToken = authenticationService.signingoogle();
             response.sendRedirect("http://localhost:5173/login-success?token=" + accessToken);
         }
         @PostMapping("/refresh")

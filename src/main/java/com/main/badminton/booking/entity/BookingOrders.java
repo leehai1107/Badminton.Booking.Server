@@ -38,10 +38,6 @@ public class BookingOrders {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedules schedules;
-
-    @ManyToOne
     @JoinColumn(name = "slot_id")
     private Slots slots;
 

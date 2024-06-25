@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/bookingOrders")
+@RequestMapping("/api/v1/bookingOrders")
 public class BookingOrdersController {
 
     @Autowired

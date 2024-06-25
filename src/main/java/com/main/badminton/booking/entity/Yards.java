@@ -64,9 +64,6 @@ public class Yards {
     private List<Slots> slots;
 
     @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Schedules> schedules;
-
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
 
     @Column(name = "create_date", nullable = false, updatable = false)

@@ -26,12 +26,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,10 +53,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final RoleRepo roleRepo;
 
+
     @Autowired
     private final TokenRepository tokenRepository;
 
-//    private static final Logger logger = LoggerFactory.getLogger(LogoutService.class);
 
 
     @Override
@@ -107,23 +113,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .build();
         return jwtAuthenticationResponse;
     }
-
-//    @Override
-//    public JwtAuthenticationResponse getTokenAfterOAuthLogin(OAuth2User oAuth2User) {
-//        String email = oAuth2User.getAttribute("email");
-//        var user = userRepo.findByEmail(email).orElseThrow(() -> new IllegalStateException("Not found"));
-//        var jwtToken = jwtService.generateToken(user);
-//        var refreshToken = jwtService.generateRefreshToken(user);
-//        revokeAllUserToken(user);
-//        saveUserToken(user, jwtToken, refreshToken);
-//
-//        JwtAuthenticationResponse jwtAuthenticationResponse =
-//                JwtAuthenticationResponse.builder()
-//                        .token(jwtToken)
-//                        .refreshToken(refreshToken)
-//                        .build();
-//        return jwtAuthenticationResponse; // Return token as response body (you might want to wrap it in a JSON object)
-//    }
 
 
     @Override
@@ -241,36 +230,48 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public String signingoogle(String email) {
-        try {
-            Optional<User> userDetails = userRepo.findByEmail(email);
-            User user = new User();
-            if (userDetails.isEmpty()) {
-                user.setEmail(email);
-                user.setRole(roleRepo.findById(2).get());
-                user.setCreateBy(0);
-                user.setUsername(email);
-                userRepo.save(user);
-//                user.setEn
-            } else {
-                user = userDetails.get();
-            }
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefreshToken(user);
+    public String signingoogle() {
 
-            revokeAllUserToken(user);
-            saveUserToken(user, jwtToken, refreshToken);
+//        OAuth2AuthenticationToken auth2AuthenticationToken;
+//        try {
+//            OAuth2User oAuth2User = this.loadUser(userRequest);
+//            String email = oAuth2User.getAttribute("email");
+//            Optional<User> userDetails = userRepo.findByEmail(email);
+//            User user = new User();
+//            if (userDetails.isEmpty()) {
+//                user.setEmail(email);
+//                user.setRole(roleRepo.findById(2).get());
+//                user.setCreateBy(0);
+//                user.setUsername(email);
+//                userRepo.save(user);
+////                user.setEn
+//            } else {
+//                user = userDetails.get();
+//            }
+//            var jwtToken = jwtService.generateToken(user);
+//            var refreshToken = jwtService.generateRefreshToken(user);
+//
+//            revokeAllUserToken(user);
+//            saveUserToken(user, jwtToken, refreshToken);
+//            return jwtToken;
+//        } catch (Exception e) {
+//            throw new IllegalStateException(e.getMessage());
+//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-//            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
-//            jwtAuthenticationResponse.setRefreshToken(refreshToken);
-//            jwtAuthenticationResponse.setToken(jwtToken);
+        String email = authentication.getName();
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        User user = userOptional.get();
 
-//            return ResponseEntity.ok(jwtAuthenticationResponse);
-            return jwtToken;
-        } catch (Exception e){
-            throw new IllegalStateException(e.getMessage());
+        List<Token> listToken = tokenRepository.findAllValidTokensByUser((long) user.getId());
+        Token token = new Token();
+        if(listToken.size() == 1){
+            token = listToken.get(0);
         }
+
+        return token.getToken();
     }
+
 
 
     private UserProfileDTO mapToUserProfileDto(User user) {
