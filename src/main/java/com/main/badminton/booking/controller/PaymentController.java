@@ -17,12 +17,8 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PaymentResponseDTO>> getUserPayments(@PathVariable Integer userId) {
-        List<PaymentResponseDTO> paymentResponseDTOs = paymentService.getPaymentsByUserId(userId);
-        if (paymentResponseDTOs == null || paymentResponseDTOs.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(paymentResponseDTOs);
+    public List<PaymentResponseDTO> getPaymentsByUserId(@PathVariable Integer userId) {
+        return paymentService.getPaymentsByUserId(userId);
     }
     @GetMapping
     public ResponseEntity<List<PaymentResponseDTO>> getAllPayments() {
