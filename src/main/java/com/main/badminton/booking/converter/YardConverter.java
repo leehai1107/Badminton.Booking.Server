@@ -1,12 +1,17 @@
 package com.main.badminton.booking.converter;
 
 import com.main.badminton.booking.dto.request.YardRequestDTO;
+import com.main.badminton.booking.dto.response.SlotResponseDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
+import com.main.badminton.booking.entity.Slots;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.entity.Yards;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class YardConverter {
@@ -15,8 +20,18 @@ public class YardConverter {
     private ModelMapper modelMapper;
 
     public YardResponseDTO toResponseDTO(Yards yard) {
-        return modelMapper.map(yard, YardResponseDTO.class);
+        YardResponseDTO yardResponseDTO = modelMapper.map(yard, YardResponseDTO.class);
+        List<SlotResponseDTO> slotResponseDTOs = yard.getSlots().stream()
+                .map(this::convertToSlotResponseDTO)
+                .collect(Collectors.toList());
+        yardResponseDTO.setSlots(slotResponseDTOs);
+        return yardResponseDTO;
     }
+
+    private SlotResponseDTO convertToSlotResponseDTO(Slots slot) {
+        return modelMapper.map(slot, SlotResponseDTO.class);
+    }
+
     public Yards toEntity(YardRequestDTO dto, User host) {
         return Yards.builder()
                 .name(dto.getName())
@@ -29,6 +44,7 @@ public class YardConverter {
                 .host(host)
                 .build();
     }
+
     public Yards toEntity(YardRequestDTO dto) {
         return Yards.builder()
                 .name(dto.getName())
@@ -52,14 +68,16 @@ public class YardConverter {
     }
 
     public Yards convertToEntity(YardRequestDTO yardRequestDTO) {
-        Yards yard = modelMapper.map(yardRequestDTO, Yards.class);
-        return yard;
+        return modelMapper.map(yardRequestDTO, Yards.class);
     }
 
     public YardResponseDTO convertToDTO(Yards yards) {
         YardResponseDTO yardResponseDTO = modelMapper.map(yards, YardResponseDTO.class);
         yardResponseDTO.setHostId(yards.getHost().getId());
+        List<SlotResponseDTO> slotResponseDTOs = yards.getSlots().stream()
+                .map(this::convertToSlotResponseDTO)
+                .collect(Collectors.toList());
+        yardResponseDTO.setSlots(slotResponseDTOs);
         return yardResponseDTO;
     }
-
 }

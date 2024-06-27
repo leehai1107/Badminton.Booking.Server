@@ -33,8 +33,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PaymentResponseDTO> getPaymentsByUserId(Integer userId) {
-        List<Payments> paymentsList = paymentRepository.findByBookingOrders_User_Id(userId);
-        return paymentsList.stream()
+        return paymentRepository.findByBookingOrders_User_Id(userId)
+                .stream()
                 .map(paymentConverter::convertToDto)
                 .collect(Collectors.toList());
     }
