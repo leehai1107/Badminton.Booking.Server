@@ -17,6 +17,12 @@ public class PaymentConverter {
         PaymentResponseDTO dto = modelMapper.map(payments, PaymentResponseDTO.class);
         if (payments.getBookingOrders() != null) {
             dto.setBookingOrderId(payments.getBookingOrders().getId());
+            dto.setYardName(payments.getBookingOrders().getYards().getName());
+            dto.setBookingAt(payments.getBookingOrders().getBookingAt());
+            if (payments.getBookingOrders().getSlots() != null) {
+                dto.setSlotStartTime(payments.getBookingOrders().getSlots().getStartTime());
+                dto.setSlotEndTime(payments.getBookingOrders().getSlots().getEndTime());
+            }
         }
         return dto;
     }
