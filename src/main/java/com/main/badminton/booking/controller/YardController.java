@@ -63,4 +63,9 @@ public class YardController {
         List<YardResponseDTO> yardResponseDTOS = yardService.getYardsByName(name, pageNumber);
         return API.Response.success(yardResponseDTOS);
     }
+
+    @GetMapping("/getByHost/{hostId}")
+    public List<YardResponseDTO> getAllYardsByHostId(@PathVariable Integer hostId) {
+        return yardService.getAllYardsByHostId(hostId);
+    }
 }
