@@ -1,8 +1,10 @@
 package com.main.badminton.booking.service.impl;
 
+import com.main.badminton.booking.config.VNPAYConfig;
 import com.main.badminton.booking.converter.PaymentConverter;
 import com.main.badminton.booking.dto.request.PaymentRequestDTO;
 import com.main.badminton.booking.dto.response.PaymentResponseDTO;
+import com.main.badminton.booking.dto.vnpay.PaymentDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.entity.Payments;
 import com.main.badminton.booking.entity.User;
@@ -10,14 +12,19 @@ import com.main.badminton.booking.repository.BookingOrdersRepository;
 import com.main.badminton.booking.repository.PaymentRepository;
 import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.service.interfc.PaymentService;
+import com.main.badminton.booking.utils.VNPAY.VNPayUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
@@ -30,6 +37,8 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentConverter paymentConverter;
     @Autowired
     private BookingOrdersRepository bookingOrdersRepository;
+
+    private final VNPAYConfig vnPayConfig;
 
     @Override
     public List<PaymentResponseDTO> getPaymentsByUserId(Integer userId) {
@@ -61,5 +70,27 @@ public class PaymentServiceImpl implements PaymentService {
         } else {
             throw new RuntimeException("Payment not found with id " + id);
         }
+    }
+
+    @Override
+    public PaymentDTO createVnPayPayment(HttpServletRequest request) {
+        long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
+        String bankCode = request.getParameter("bankCode");
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
+        vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
+        if (bankCode != null && !bankCode.isEmpty()) {
+            vnpParamsMap.put("vnp_BankCode", bankCode);
+        }
+        vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
+        //build query url
+        String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
+        String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
+        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
+        queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
+        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+        return PaymentDTO.builder()
+                .code("ok")
+                .message("success")
+                .paymentUrl(paymentUrl).build();
     }
 }
