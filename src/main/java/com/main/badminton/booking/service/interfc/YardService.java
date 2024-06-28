@@ -13,4 +13,5 @@ public interface YardService {
     List<YardResponseDTO> getAllYards(int pageNumber);
     List<YardResponseDTO> getAllYardsByActiveStatus(int pageNumber);
     List<YardResponseDTO> getYardsByName(String name, int pageNumber);
+    List<YardResponseDTO> getAllYardsByHostId(Integer hostId);
 }
