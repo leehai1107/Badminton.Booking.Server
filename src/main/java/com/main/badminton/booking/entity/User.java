@@ -31,7 +31,7 @@ import java.util.List;
 @Builder
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
-public class    User implements UserDetails {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

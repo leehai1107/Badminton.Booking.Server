@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class SlotRequestDTO {
     private Double price;
 
-    private Boolean status;
+    private String status;
 
     private String start_time;
 

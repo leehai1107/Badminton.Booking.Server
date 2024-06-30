@@ -31,7 +31,7 @@ public class Slots {
     private Double price;
 
     @Column(name = "status")
-    private Boolean status;
+    private String status;
 
     @Column(name = "start_time")
     private LocalTime startTime;
