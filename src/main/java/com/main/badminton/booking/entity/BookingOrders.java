@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class BookingOrders {
     private Integer id;
 
     @Column(name = "booking_at")
-    private String bookingAt;
+    private LocalDate bookingAt = LocalDate.now();
 
     @Column(name = "status")
-    private String status;
+    private String status = "pending";
 
     @ManyToOne
     @JoinColumn(name = "yard_id")
@@ -37,18 +38,14 @@ public class BookingOrders {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedules schedules;
-
-    @ManyToOne
     @JoinColumn(name = "slot_id")
     private Slots slots;
 
     @Column(name = "tournament_start")
-    private LocalTime tournamentStart;
+    private LocalDate tournamentStart;
 
     @Column(name = "tournament_end")
-    private LocalTime tournamentEnd;
+    private LocalDate tournamentEnd;
 
     @OneToMany(mappedBy = "bookingOrders", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payments> payments;

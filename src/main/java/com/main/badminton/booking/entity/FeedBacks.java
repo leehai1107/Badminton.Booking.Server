@@ -11,7 +11,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @Entity
@@ -36,11 +37,11 @@ public class FeedBacks {
 
     @Column(name = "create_date", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDate createDate;
 
     @Column(name = "update_date", insertable = false)
     @LastModifiedDate
-    private LocalDateTime updateDate;
+    private LocalDate updateDate;
 
 
     @Column(name = "create_by", nullable = false, updatable = false)

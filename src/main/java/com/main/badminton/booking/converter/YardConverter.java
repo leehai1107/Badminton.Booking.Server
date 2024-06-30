@@ -1,31 +1,35 @@
 package com.main.badminton.booking.converter;
 
 import com.main.badminton.booking.dto.request.YardRequestDTO;
+import com.main.badminton.booking.dto.response.SlotResponseDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
+import com.main.badminton.booking.entity.Slots;
 import com.main.badminton.booking.entity.User;
 import com.main.badminton.booking.entity.Yards;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class YardConverter {
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public YardResponseDTO toResponseDTO(Yards yard) {
-        YardResponseDTO dto = new YardResponseDTO();
-        dto.setId(yard.getId());
-        dto.setName(yard.getName());
-        dto.setAddress(yard.getAddress());
-        dto.setProvinceId(yard.getProvinceId());
-        dto.setDescription(yard.getDescription());
-        dto.setStatus(yard.getStatus());
-        dto.setOpenTime(yard.getOpenTime());
-        dto.setCloseTime(yard.getCloseTime());
-        dto.setCreateDate(yard.getCreateDate());
-        dto.setUpdateDate(yard.getUpdateDate());
-        dto.setCreateBy(yard.getCreateBy());
-        dto.setUpdateBy(yard.getUpdateBy());
-        return dto;
+        YardResponseDTO yardResponseDTO = modelMapper.map(yard, YardResponseDTO.class);
+        List<SlotResponseDTO> slotResponseDTOs = yard.getSlots().stream()
+                .map(this::convertToSlotResponseDTO)
+                .collect(Collectors.toList());
+        yardResponseDTO.setSlots(slotResponseDTOs);
+        return yardResponseDTO;
+    }
+
+    private SlotResponseDTO convertToSlotResponseDTO(Slots slot) {
+        return modelMapper.map(slot, SlotResponseDTO.class);
     }
 
     public Yards toEntity(YardRequestDTO dto, User host) {
@@ -40,6 +44,7 @@ public class YardConverter {
                 .host(host)
                 .build();
     }
+
     public Yards toEntity(YardRequestDTO dto) {
         return Yards.builder()
                 .name(dto.getName())
@@ -62,4 +67,17 @@ public class YardConverter {
         yard.setCloseTime(dto.getCloseTime());
     }
 
+    public Yards convertToEntity(YardRequestDTO yardRequestDTO) {
+        return modelMapper.map(yardRequestDTO, Yards.class);
+    }
+
+    public YardResponseDTO convertToDTO(Yards yards) {
+        YardResponseDTO yardResponseDTO = modelMapper.map(yards, YardResponseDTO.class);
+        yardResponseDTO.setHostId(yards.getHost().getId());
+        List<SlotResponseDTO> slotResponseDTOs = yards.getSlots().stream()
+                .map(this::convertToSlotResponseDTO)
+                .collect(Collectors.toList());
+        yardResponseDTO.setSlots(slotResponseDTOs);
+        return yardResponseDTO;
+    }
 }

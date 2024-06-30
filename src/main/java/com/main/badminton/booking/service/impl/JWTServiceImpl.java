@@ -1,11 +1,14 @@
 package com.main.badminton.booking.service.impl;
 
+import com.main.badminton.booking.entity.User;
+import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.service.interfc.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
+
 @Service
 public class JWTServiceImpl implements JWTService {
     @Value("${jwt.secret-key}")
@@ -25,36 +29,41 @@ public class JWTServiceImpl implements JWTService {
     @Value("${jwt.expiration.refresh-token}")
     private long refreshExpiration;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimResolvers){
-        final Claims claims = extractAllClaim(token);
+    private <T> T extractClaim(String token, Function<Claims, T> claimResolvers) {
+        final Claims claims = extractAllClaims(token);
         return claimResolvers.apply(claims);
     }
 
-    private Key getSignKey(){
+    private Key getSignKey() {
         byte[] key = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(key);
     }
 
-    private Claims extractAllClaim(String token){
+    private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long jwtExpiration) {
-        return Jwts
-                .builder()
+        User user = userRepo.findByUsername(userDetails.getUsername()).get();
+        return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .claim("role", populateAuthorities(userDetails.getAuthorities()))
+                .claim("id", user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
     private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
         Set<String> authoritiesSet = new HashSet<>();
         for (GrantedAuthority authority : authorities) {
@@ -81,7 +90,7 @@ public class JWTServiceImpl implements JWTService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token){
+    private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 }

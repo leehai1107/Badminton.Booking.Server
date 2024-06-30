@@ -1,6 +1,7 @@
 // src/main/java/com/main/badminton/booking/converter/UserConverter.java
 package com.main.badminton.booking.converter;
 
+import com.main.badminton.booking.dto.request.UserDTO;
 import com.main.badminton.booking.dto.request.UserRequestDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
 import com.main.badminton.booking.entity.User;
@@ -18,7 +19,7 @@ public class UserConverter {
         return modelMapper.map(user, UserResponseDTO.class);
     }
 
-    public User convertToEntity(UserRequestDTO userRequestDTO) {
-        return modelMapper.map(userRequestDTO, User.class);
+    public User convertToEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, User.class);
     }
 }

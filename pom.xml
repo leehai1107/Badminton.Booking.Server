@@ -25,8 +25,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
 
-<!--		<dependency>-->
+
+		<!--		<dependency>-->
 <!--			<groupId>org.postgresql</groupId>-->
 <!--			<artifactId>postgresql</artifactId>-->
 <!--			<scope>runtime</scope>-->
@@ -80,7 +85,6 @@
 			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
 			<version>0.11.5</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>

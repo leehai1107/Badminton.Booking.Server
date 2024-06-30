@@ -31,8 +31,4 @@ public class Payments {
 
     @OneToMany(mappedBy = "payments", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FeedBacks> feedBacks;
-
-
-
-
 }

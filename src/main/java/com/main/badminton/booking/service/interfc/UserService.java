@@ -1,9 +1,13 @@
 package com.main.badminton.booking.service.interfc;
 
 import com.main.badminton.booking.dto.request.ChangePasswordRequest;
+import com.main.badminton.booking.dto.request.UserDTO;
 import com.main.badminton.booking.dto.request.UserRequestDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
-import org.springframework.security.core.userdetails.User;
+import com.main.badminton.booking.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.security.Principal;
@@ -15,6 +19,8 @@ public interface UserService {
     UserResponseDTO getUserByUsername(String username);
     UserResponseDTO getUserByEmail(String email);
     List<UserResponseDTO> searchUsers(String keyword);
-
+    User getUserByEmail2(String email);
     void changePassword(ChangePasswordRequest request, Principal connectedUser);
+    UserResponseDTO updateUserInfo(Integer id, UserDTO userDTO);
+    Page<UserResponseDTO> getAllUsers(Pageable pageable);
 }
