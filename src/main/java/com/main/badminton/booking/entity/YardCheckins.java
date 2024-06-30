@@ -21,7 +21,7 @@ public class YardCheckins {
     private Integer id;
 
     @Column(name = "status")
-    private String status;
+    private Boolean status;
 
     @Column(name = "checkin_time")
     private LocalTime checkInTime;

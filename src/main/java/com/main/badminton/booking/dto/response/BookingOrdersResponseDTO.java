@@ -16,5 +16,5 @@ public class BookingOrdersResponseDTO {
     private Integer userId;
     private Integer scheduleId;
     private Integer slotId;
-    private String status;
+    private Boolean status;
 }
