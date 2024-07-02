@@ -73,10 +73,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public void savePayment(Payments payments) {
+        paymentRepository.save(payments);
+    }
+
+    @Override
     public PaymentDTO createVnPayPayment(HttpServletRequest request) {
         long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
         String bankCode = request.getParameter("bankCode");
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
+        String bookingCode = request.getParameter("bookingCode");
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(bookingCode);
         vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
         if (bankCode != null && !bankCode.isEmpty()) {
             vnpParamsMap.put("vnp_BankCode", bankCode);
