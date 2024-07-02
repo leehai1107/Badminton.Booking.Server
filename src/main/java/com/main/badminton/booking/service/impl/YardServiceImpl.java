@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,6 +109,15 @@ public class YardServiceImpl implements YardService {
     public List<YardResponseDTO> getAllYardsByHostId(Integer hostId) {
         List<Yards> yards = yardRepository.findAllByHostId(hostId); // Assuming you have a method in your repository to find yards by hostId
         return yards.stream()
+                .map(yardConverter::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<YardResponseDTO> getRandomYard() {
+        List<Yards> list = yardRepository.findRandomActiveYards();
+        return list
+                .stream()
                 .map(yardConverter::toResponseDTO)
                 .collect(Collectors.toList());
     }

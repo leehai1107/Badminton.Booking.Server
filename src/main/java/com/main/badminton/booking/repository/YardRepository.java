@@ -19,4 +19,7 @@ public interface YardRepository extends JpaRepository<Yards, Integer> {
     @Query("SELECT u FROM Yards u where u.name LIKE %:name%")
     List<Yards> findYardByName(@Param("name") String name, Pageable pageable);
     List<Yards> findAllByHostId(Integer hostId);
+
+    @Query(value = "SELECT * FROM yards WHERE status = true ORDER BY RAND() LIMIT 5", nativeQuery = true)
+    List<Yards> findRandomActiveYards();
 }

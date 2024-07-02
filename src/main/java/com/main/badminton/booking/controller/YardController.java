@@ -68,4 +68,9 @@ public class YardController {
     public List<YardResponseDTO> getAllYardsByHostId(@PathVariable Integer hostId) {
         return yardService.getAllYardsByHostId(hostId);
     }
+
+    @GetMapping("/getRandom")
+    public ResponseEntity<Object> getRandomYard(){
+        return ResponseEntity.ok(API.Response.success(yardService.getRandomYard()));
+    }
 }
