@@ -23,4 +23,5 @@ public interface UserService {
     void changePassword(ChangePasswordRequest request, Principal connectedUser);
     UserResponseDTO updateUserInfo(Integer id, UserDTO userDTO);
     Page<UserResponseDTO> getAllUsers(Pageable pageable);
+    Page<UserResponseDTO> getAllStaffsByManager(Integer managerId, Pageable pageable);
 }

@@ -111,4 +111,14 @@ public class UserController {
         return ResponseEntity.ok(createUserResponseDTO);
     }
 
+    @GetMapping("/manager")
+    public ResponseEntity<List<UserResponseDTO>> getAllStaffsByManager(
+            @RequestParam(name = "managerId") Integer managerId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserResponseDTO> users = userService.getAllStaffsByManager(managerId, pageable);
+        return ResponseEntity.ok(users.getContent());
+    }
 }
