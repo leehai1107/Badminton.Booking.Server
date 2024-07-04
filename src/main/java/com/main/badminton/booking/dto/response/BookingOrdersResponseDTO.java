@@ -15,7 +15,7 @@ import java.time.LocalTime;
 public class BookingOrdersResponseDTO {
     private Integer id;
     private LocalDate bookingAt;
-    private String status;
+    private Boolean status;
     private Integer yardId;
     private Integer userId;
     private Integer slotId;
