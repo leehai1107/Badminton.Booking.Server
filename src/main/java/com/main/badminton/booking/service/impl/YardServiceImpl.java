@@ -111,4 +111,11 @@ public class YardServiceImpl implements YardService {
                 .map(yardConverter::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public YardResponseDTO getYardDetailActiveSlots(Integer yardId) {
+        return yardRepository.getYardDetailActiveSlots(yardId)
+                .map(yardConverter::convertToDTO)
+                .orElse(null);
+    }
 }
