@@ -119,4 +119,10 @@ public class UserServiceImpl implements UserService {
         Page<User> users = userRepo.findAll(pageable);
         return users.map(userConverter::convertToDto);
     }
+
+    @Override
+    public Page<UserResponseDTO> getAllStaffsByManager(Integer managerId, Pageable pageable) {
+        Page<User> users = userRepo.GetStaffsByManager(managerId, pageable);
+        return users.map(userConverter::convertToDto);
+    }
 }

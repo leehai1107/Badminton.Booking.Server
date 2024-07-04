@@ -68,4 +68,9 @@ public class YardController {
     public List<YardResponseDTO> getAllYardsByHostId(@PathVariable Integer hostId) {
         return yardService.getAllYardsByHostId(hostId);
     }
+
+    @GetMapping("{yardId}/active-slots")
+    public YardResponseDTO getYardDetailActiveSlots(@PathVariable Integer yardId){
+        return yardService.getYardDetailActiveSlots(yardId);
+    }
 }
