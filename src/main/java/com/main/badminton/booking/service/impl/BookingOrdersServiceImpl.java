@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingOrdersServiceImpl implements BookingOrdersService {
@@ -37,5 +39,11 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
         bookingOrders.setStatus(true);
         bookingOrdersRepository.save(bookingOrders);
         return bookingOrders;
+    }
+    @Override
+    public List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(Integer userId) {
+        return bookingOrdersRepository.findByUserId(userId).stream()
+                .map(bookingOrdersConverter::entityToResponseDto)
+                .collect(Collectors.toList());
     }
 }

@@ -25,4 +25,8 @@ public class BookingOrdersController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(createdBookingOrders, HttpStatus.CREATED);
     }
+    @GetMapping("/user/{userId}")
+    public List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(@PathVariable Integer userId) {
+        return bookingOrdersService.getAllBookingOrdersByUserId(userId);
+    }
 }
