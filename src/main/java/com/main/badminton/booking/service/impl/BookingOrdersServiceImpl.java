@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingOrdersServiceImpl implements BookingOrdersService {
@@ -29,5 +31,11 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
         bookingOrders.setBookingAt(LocalDate.now());  // Set the current date
         BookingOrders savedBookingOrders = bookingOrdersRepository.save(bookingOrders);
         return bookingOrdersConverter.entityToResponseDto(savedBookingOrders);
+    }
+    @Override
+    public List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(Integer userId) {
+        return bookingOrdersRepository.findByUserId(userId).stream()
+                .map(bookingOrdersConverter::entityToResponseDto)
+                .collect(Collectors.toList());
     }
 }
