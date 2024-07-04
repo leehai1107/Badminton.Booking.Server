@@ -7,7 +7,7 @@ import java.time.LocalTime;
 @Data
 public class YardCheckinRequestDTO {
     private Integer id;
-    private String status;
+    private Boolean status;
     private LocalTime checkInTime;
     private LocalTime checkOutTime;
     private Integer paymentId;

@@ -30,4 +30,12 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
         BookingOrders savedBookingOrders = bookingOrdersRepository.save(bookingOrders);
         return bookingOrdersConverter.entityToResponseDto(savedBookingOrders);
     }
+
+    @Override
+    public BookingOrders updateStatus(Integer id) {
+        BookingOrders bookingOrders = bookingOrdersRepository.findById(id).get();
+        bookingOrders.setStatus(true);
+        bookingOrdersRepository.save(bookingOrders);
+        return bookingOrders;
+    }
 }

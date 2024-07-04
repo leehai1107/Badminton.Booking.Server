@@ -103,4 +103,12 @@ public class YardServiceImpl implements YardService {
                 .map(yardConverter::toResponseDTO)
                 .toList();
     }
+
+    @Override
+    public List<YardResponseDTO> getAllYardsByHostId(Integer hostId) {
+        List<Yards> yards = yardRepository.findAllByHostId(hostId); // Assuming you have a method in your repository to find yards by hostId
+        return yards.stream()
+                .map(yardConverter::toResponseDTO)
+                .collect(Collectors.toList());
+    }
 }

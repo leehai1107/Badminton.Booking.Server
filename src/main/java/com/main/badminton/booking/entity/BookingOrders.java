@@ -27,7 +27,7 @@ public class BookingOrders {
     private LocalDate bookingAt = LocalDate.now();
 
     @Column(name = "status")
-    private String status = "pending";
+    private Boolean status;
 
     @ManyToOne
     @JoinColumn(name = "yard_id")

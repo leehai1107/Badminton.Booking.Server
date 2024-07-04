@@ -1,8 +1,11 @@
 package com.main.badminton.booking.controller;
 
 import com.main.badminton.booking.dto.request.ChangePasswordRequest;
+import com.main.badminton.booking.dto.request.CreateUserRequestDTO;
 import com.main.badminton.booking.dto.request.UserDTO;
+import com.main.badminton.booking.dto.response.CreateUserResponseDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
+import com.main.badminton.booking.service.interfc.CreateUserService;
 import com.main.badminton.booking.service.interfc.UserService;
 import com.main.badminton.booking.utils.logger.LogUtil;
 import com.main.badminton.booking.utils.wapper.API;
@@ -24,6 +27,8 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private CreateUserService createUserService;
 
 //    @PreAuthorize("hasRole('USER')")
     @GetMapping("/ping")
@@ -99,4 +104,11 @@ public class UserController {
         Page<UserResponseDTO> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users.getContent());
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<CreateUserResponseDTO> createUser(@RequestBody CreateUserRequestDTO createUserRequestDTO) {
+        CreateUserResponseDTO createUserResponseDTO = createUserService.createUser(createUserRequestDTO);
+        return ResponseEntity.ok(createUserResponseDTO);
+    }
+
 }
