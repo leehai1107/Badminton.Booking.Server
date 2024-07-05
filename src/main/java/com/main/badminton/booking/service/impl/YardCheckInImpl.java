@@ -9,6 +9,8 @@ import com.main.badminton.booking.service.interfc.YardCheckInService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class YardCheckInImpl implements YardCheckInService {
     @Autowired
@@ -17,8 +19,8 @@ public class YardCheckInImpl implements YardCheckInService {
     private YardCheckinConverter yardCheckinConverter;
 
     @Override
-    public List<YardCheckins> findAllYardCheckIns() {
-        List<YardCheckins> list = yardCheckInRepository.findAll();
+    public List<YardCheckins> findAllByYardId(Integer id) {
+        List<YardCheckins> list = yardCheckInRepository.findAllByYardId(id);
         if(list != null){
             return list;
         }
@@ -34,7 +36,7 @@ public class YardCheckInImpl implements YardCheckInService {
 
     @Override
     public YardCheckinResponseDTO updateStatus(YardCheckinRequestDTO requestDTO) {
-        YardCheckins yardCheckins = yardCheckInRepository.findById(Long.valueOf(requestDTO.getId()))
+        YardCheckins yardCheckins = yardCheckInRepository.findById(requestDTO.getId())
                 .orElseThrow(() -> new RuntimeException("Check-in not found"));
 
         yardCheckins.setStatus(requestDTO.getStatus());

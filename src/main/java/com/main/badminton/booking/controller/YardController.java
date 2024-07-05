@@ -70,7 +70,12 @@ public class YardController {
     }
 
     @GetMapping("{yardId}/active-slots")
-    public YardResponseDTO getYardDetailActiveSlots(@PathVariable Integer yardId){
+    public YardResponseDTO getYardDetailActiveSlots(@PathVariable Integer yardId) {
         return yardService.getYardDetailActiveSlots(yardId);
+    }
+
+    @GetMapping("/getRandom")
+    public ResponseEntity<Object> getRandomYard(){
+        return ResponseEntity.ok(API.Response.success(yardService.getRandomYard()));
     }
 }
