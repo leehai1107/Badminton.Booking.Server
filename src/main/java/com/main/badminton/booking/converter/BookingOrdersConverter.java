@@ -2,8 +2,8 @@ package com.main.badminton.booking.converter;
 
 import com.main.badminton.booking.dto.request.BookingOrdersRequestDTO;
 import com.main.badminton.booking.dto.response.BookingOrdersResponseDTO;
+import com.main.badminton.booking.dto.response.SimpleYardResponseDTO;
 import com.main.badminton.booking.dto.response.SlotResponseDTO;
-import com.main.badminton.booking.dto.response.YardResponseDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.entity.Slots;
 import com.main.badminton.booking.entity.User;
@@ -49,7 +49,7 @@ public class BookingOrdersConverter {
         dto.setId(bookingOrders.getId());
         dto.setBookingAt(bookingOrders.getBookingAt());
         dto.setStatus(bookingOrders.getStatus());
-        dto.setYard(convertToYardResponseDTO(bookingOrders.getYards()));
+        dto.setYard(convertToSimpleYardResponseDTO(bookingOrders.getYards()));
         dto.setUserId(bookingOrders.getUser().getId());
         dto.setSlot(convertToSlotResponseDTO(bookingOrders.getSlots()));
         dto.setTournamentStart(bookingOrders.getTournamentStart());
@@ -58,13 +58,11 @@ public class BookingOrdersConverter {
         return dto;
     }
 
-    private YardResponseDTO convertToYardResponseDTO(Yards yards) {
-        YardResponseDTO yardDTO = modelMapper.map(yards, YardResponseDTO.class);
-        return yardDTO;
+    private SimpleYardResponseDTO convertToSimpleYardResponseDTO(Yards yards) {
+        return modelMapper.map(yards, SimpleYardResponseDTO.class);
     }
 
     private SlotResponseDTO convertToSlotResponseDTO(Slots slots) {
-        SlotResponseDTO slotDTO = modelMapper.map(slots, SlotResponseDTO.class);
-        return slotDTO;
+        return modelMapper.map(slots, SlotResponseDTO.class);
     }
 }
