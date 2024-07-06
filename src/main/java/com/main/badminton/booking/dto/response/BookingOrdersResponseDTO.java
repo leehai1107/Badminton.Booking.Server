@@ -16,9 +16,9 @@ public class BookingOrdersResponseDTO {
     private Integer id;
     private LocalDate bookingAt;
     private Boolean status;
-    private Integer yardId;
+    private YardResponseDTO yard;
     private Integer userId;
-    private Integer slotId;
+    private SlotResponseDTO slot;
     private LocalDate tournamentStart;
     private LocalDate tournamentEnd;
 }
