@@ -42,7 +42,8 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
     }
     @Override
     public List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(Integer userId) {
-        return bookingOrdersRepository.findByUserId(userId).stream()
+        List<BookingOrders> bookingOrdersList = bookingOrdersRepository.findByUserId(userId);
+        return bookingOrdersList.stream()
                 .map(bookingOrdersConverter::entityToResponseDto)
                 .collect(Collectors.toList());
     }
