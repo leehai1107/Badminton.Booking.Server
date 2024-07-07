@@ -19,7 +19,7 @@ public class VNPAYConfig {
     @Value("${payment.vnPay.returnUrl}")
     private String vnp_ReturnUrl;
     @Value("${payment.vnPay.tmnCode}")
-    private String vnp_TmnCode ;
+    private String vnp_TmnCode;
     @Getter
     @Value("${payment.vnPay.secretKey}")
     private String secretKey;
@@ -36,18 +36,26 @@ public class VNPAYConfig {
         vnpParamsMap.put("vnp_Command", this.vnp_Command);
         vnpParamsMap.put("vnp_TmnCode", this.vnp_TmnCode);
         vnpParamsMap.put("vnp_CurrCode", "VND");
-        vnpParamsMap.put("vnp_TxnRef",  VNPayUtil.getRandomNumber(8));
-        vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  VNPayUtil.getRandomNumber(8));
+        vnpParamsMap.put("vnp_TxnRef", VNPayUtil.getRandomNumber(8));
+        vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" + VNPayUtil.getRandomNumber(8));
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
         vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl + "?vnp_Data=" + booking_order_code);
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+
+        // Thiết lập thời gian tạo và hết hạn giao dịch
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh")); // Đảm bảo định dạng sử dụng đúng múi giờ
+
+        // Thời gian tạo giao dịch
         String vnpCreateDate = formatter.format(calendar.getTime());
         vnpParamsMap.put("vnp_CreateDate", vnpCreateDate);
+
+        // Thời gian hết hạn giao dịch (thêm 15 phút)
         calendar.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(calendar.getTime());
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
+
         return vnpParamsMap;
     }
 }
