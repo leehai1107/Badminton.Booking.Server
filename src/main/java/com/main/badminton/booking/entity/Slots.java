@@ -59,6 +59,6 @@ public class Slots {
     @JoinColumn(name = "yard_id")
     private Yards yards;
 
-    @OneToMany(mappedBy = "slots", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "slots", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
 }

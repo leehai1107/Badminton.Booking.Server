@@ -29,6 +29,6 @@ public class Payments {
     @JoinColumn(name = "booking_id")
     private BookingOrders bookingOrders;
 
-    @OneToMany(mappedBy = "payments", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "payments", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<FeedBacks> feedBacks;
 }

@@ -47,7 +47,7 @@ public class BookingOrders {
     @Column(name = "tournament_end")
     private LocalDate tournamentEnd;
 
-    @OneToMany(mappedBy = "bookingOrders", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bookingOrders", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Payments> payments;
 
 }

@@ -54,16 +54,16 @@ public class Yards {
     @JoinColumn(name = "host_id")
     private User host;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<YardImages> yardImages;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Telephones> telephones;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Slots> slots;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
 
     @Column(name = "create_date", nullable = false, updatable = false)
