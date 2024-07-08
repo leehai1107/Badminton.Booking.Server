@@ -10,11 +10,13 @@ import com.main.badminton.booking.repository.BookingOrdersRepository;
 import com.main.badminton.booking.service.interfc.BookingOrdersService;
 import com.main.badminton.booking.service.interfc.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -46,7 +48,7 @@ public class PaymentController {
         return new ResponseObject<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(request));
     }
     @GetMapping("/vn-pay-callback")
-    public ResponseObject<PaymentDTO> payCallbackHandler(HttpServletRequest request) {
+    public void payCallbackHandler(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String status = request.getParameter("vnp_ResponseCode");
         String bookingCodeStr = request.getParameter("vnp_Data");
         String amount = request.getParameter("vnp_Amount");
@@ -60,9 +62,9 @@ public class PaymentController {
                 payments.setIStournament(true);
                 paymentService.savePayment(payments);
             }
-            return new ResponseObject<>(HttpStatus.OK, "Success", new PaymentDTO("00", "Success", ""));
+            response.sendRedirect("http://localhost:5173/payment-success");// to done page
         } else {
-            return new ResponseObject<>(HttpStatus.BAD_REQUEST, "Failed", null);
+            response.sendRedirect("http://localhost:5173/SuccessPayment");// to done page
         }
     }
 }
