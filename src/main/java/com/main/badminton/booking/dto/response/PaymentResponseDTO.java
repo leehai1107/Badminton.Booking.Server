@@ -2,7 +2,7 @@ package com.main.badminton.booking.dto.response;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -12,7 +12,7 @@ public class PaymentResponseDTO {
     private Boolean iStournament;
     private Integer bookingOrderId;
     private String yardName;
-    private LocalDate bookingAt;
+    private LocalDateTime bookingAt;
     private LocalTime slotStartTime;
     private LocalTime slotEndTime;
 }

@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
@@ -14,7 +15,7 @@ import java.time.LocalTime;
 @Builder
 public class BookingOrdersResponseDTO {
     private Integer id;
-    private LocalDate bookingAt;
+    private LocalDateTime bookingAt;
     private Boolean status;
     private SimpleYardResponseDTO yard;
     private Integer userId;

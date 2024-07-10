@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class BookingOrders {
     private Integer id;
 
     @Column(name = "booking_at")
-    private LocalDate bookingAt = LocalDate.now();
+    private LocalDateTime bookingAt = LocalDateTime.now();
 
     @Column(name = "status")
     private Boolean status;
