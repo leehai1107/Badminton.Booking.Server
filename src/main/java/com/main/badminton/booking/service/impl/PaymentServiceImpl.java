@@ -2,8 +2,10 @@ package com.main.badminton.booking.service.impl;
 
 import com.main.badminton.booking.config.VNPAYConfig;
 import com.main.badminton.booking.converter.PaymentConverter;
+import com.main.badminton.booking.converter.SimplePaymentConverter;
 import com.main.badminton.booking.dto.request.PaymentRequestDTO;
 import com.main.badminton.booking.dto.response.PaymentResponseDTO;
+import com.main.badminton.booking.dto.response.SimplePaymentResponseDTO;
 import com.main.badminton.booking.dto.vnpay.PaymentDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.entity.Payments;
@@ -35,6 +37,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private PaymentConverter paymentConverter;
+
+    @Autowired
+    private SimplePaymentConverter simplePaymentConverter;
     @Autowired
     private BookingOrdersRepository bookingOrdersRepository;
 
@@ -98,5 +103,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .code("ok")
                 .message("success")
                 .paymentUrl(paymentUrl).build();
+    }
+
+    @Override
+    public List<SimplePaymentResponseDTO> getPaymentsByYardId(Integer yardId) {
+        List<Payments> paymentsList = paymentRepository.findByBookingOrdersYardsId(yardId);
+        return paymentsList.stream()
+                .map(simplePaymentConverter::convertToDto)
+                .collect(Collectors.toList());
     }
 }
