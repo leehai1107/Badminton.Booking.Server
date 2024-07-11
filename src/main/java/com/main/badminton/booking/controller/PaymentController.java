@@ -3,6 +3,7 @@ package com.main.badminton.booking.controller;
 import com.main.badminton.booking.dto.request.PaymentRequestDTO;
 import com.main.badminton.booking.dto.response.PaymentResponseDTO;
 import com.main.badminton.booking.dto.response.ResponseObject;
+import com.main.badminton.booking.dto.response.SimplePaymentResponseDTO;
 import com.main.badminton.booking.dto.vnpay.PaymentDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.entity.Payments;
@@ -31,6 +32,10 @@ public class PaymentController {
     @GetMapping("/user/{userId}")
     public List<PaymentResponseDTO> getPaymentsByUserId(@PathVariable Integer userId) {
         return paymentService.getPaymentsByUserId(userId);
+    }
+    @GetMapping("/yard/{yardId}")
+    public List<SimplePaymentResponseDTO> getPaymentsByYardId(@PathVariable Integer yardId) {
+        return paymentService.getPaymentsByYardId(yardId);
     }
     @GetMapping
     public ResponseEntity<List<PaymentResponseDTO>> getAllPayments() {
