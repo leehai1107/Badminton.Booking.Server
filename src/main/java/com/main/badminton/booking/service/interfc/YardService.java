@@ -17,4 +17,5 @@ public interface YardService {
     YardResponseDTO getYardDetailActiveSlots(Integer yardId);
     List<YardResponseDTO> getRandomYard();
     YardResponseDTO addTelephonesToYard(Integer Id, List<String> telephonesRequestDTO);
+    YardResponseDTO addImagesToYard(Integer Id, List<String> imageUrls);
 }

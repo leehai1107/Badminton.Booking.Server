@@ -2,15 +2,20 @@ package com.main.badminton.booking.service.impl;
 
 import com.main.badminton.booking.converter.TelephonesConverter;
 import com.main.badminton.booking.converter.YardConverter;
+import com.main.badminton.booking.converter.YardImagesConverter;
 import com.main.badminton.booking.dto.TelephonesDTO;
+import com.main.badminton.booking.dto.request.YardImagesDTO;
 import com.main.badminton.booking.dto.request.YardRequestDTO;
+import com.main.badminton.booking.dto.response.YardImageDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
 import com.main.badminton.booking.entity.Telephones;
 import com.main.badminton.booking.entity.User;
+import com.main.badminton.booking.entity.YardImages;
 import com.main.badminton.booking.entity.Yards;
 import com.main.badminton.booking.repository.UserRepo;
 import com.main.badminton.booking.repository.YardRepository;
 import com.main.badminton.booking.service.interfc.TelephonesService;
+import com.main.badminton.booking.service.interfc.YardImageService;
 import com.main.badminton.booking.service.interfc.YardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,16 +42,23 @@ public class YardServiceImpl implements YardService {
     private final TelephonesConverter telephonesConverter;
 
     @Autowired
+    private final YardImagesConverter yardImagesConverter;
+
+    @Autowired
     private UserRepo userRepo;
 
     @Autowired
     private TelephonesService telephonesService;
 
     @Autowired
-    public YardServiceImpl(YardRepository yardRepository, YardConverter yardConverter, TelephonesConverter telephonesConverter) {
+    private YardImageService yardImageService;
+
+    @Autowired
+    public YardServiceImpl(YardRepository yardRepository, YardConverter yardConverter, TelephonesConverter telephonesConverter, YardImagesConverter yardImagesConverter) {
         this.yardRepository = yardRepository;
         this.yardConverter = yardConverter;
         this.telephonesConverter = telephonesConverter;
+        this.yardImagesConverter = yardImagesConverter;
     }
     @Override
     public YardResponseDTO createYard(YardRequestDTO yardRequestDTO) {
@@ -188,6 +200,45 @@ public class YardServiceImpl implements YardService {
         yards.setTelephones(newTelephones);
 
         // Save the yard
+        yardRepository.save(yards);
+
+        return yardConverter.convertToDTO(yards);
+    }
+
+    @Override
+    public YardResponseDTO addImagesToYard(Integer id, List<String> imageUrls) {
+        Yards yards = yardRepository.findById(id).orElse(null);
+        if (yards == null) {
+            return null;
+        }
+
+        List<YardImages> newYardImages = new ArrayList<>();
+        List<YardImages> existYardImages = new ArrayList<>();
+        for (String img : imageUrls){
+            existYardImages = yardImageService.findByUrl(img).stream()
+                    .map(yardImagesConverter::toEntity)
+                    .toList();
+            if(existYardImages.isEmpty()){
+                YardImageDTO yardImageDTO = new YardImageDTO();
+                yardImageDTO.setImage(img);
+                YardImages yardImages = yardImagesConverter.toEntity(yardImageDTO);
+                yardImages.setYards(yards);
+                yardImages = yardImageService.save(yardImages);
+                newYardImages.add(yardImages);
+            }else {
+                for(YardImages yd : existYardImages){
+                    if(yd.getYards() == null){
+                        yd.setYards(yards);
+                        yd = yardImageService.save(yd);
+                        newYardImages.add(yd);
+                    }else if(yd.getYards().getId().equals(id)){
+                        newYardImages.add(yd);
+                    }
+                }
+            }
+        }
+
+        yards.setYardImages(newYardImages);
         yardRepository.save(yards);
 
         return yardConverter.convertToDTO(yards);
