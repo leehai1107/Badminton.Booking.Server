@@ -145,7 +145,7 @@ public class YardServiceImpl implements YardService {
         }
 
         List<TelephonesDTO> newTelephonesDTOS = new ArrayList<>();
-        List<Telephones> allTelephones = new ArrayList<>();
+//        List<Telephones> allTelephones = new ArrayList<>();
 
         for (String tele : telephones) {
             var existTelephones = telephonesService.getByTelephone(tele).stream()
@@ -157,9 +157,9 @@ public class YardServiceImpl implements YardService {
                 TelephonesDTO telephonesDTO = new TelephonesDTO();
                 telephonesDTO.setTelephone(tele);
                 telephonesDTO.setYardId(yardId);
-                telephonesService.create(telephonesDTO);
+                telephonesDTO = telephonesService.create(telephonesDTO);
 
-//                newTelephonesDTOS.add(telephonesDTO);
+                newTelephonesDTOS.add(telephonesDTO);
             } else {
                 // Handle existing telephones
                 for (Telephones t : existTelephones) {
@@ -184,13 +184,12 @@ public class YardServiceImpl implements YardService {
                 .collect(Collectors.toList());
 
         // Add all telephones (existing + new) to the yard
-        allTelephones.addAll(newTelephones);
-        yards.setTelephones(allTelephones);
+//        allTelephones.addAll(newTelephones);
+        yards.setTelephones(newTelephones);
 
         // Save the yard
         yardRepository.save(yards);
 
         return yardConverter.convertToDTO(yards);
     }
-
 }
