@@ -4,15 +4,13 @@ import com.main.badminton.booking.config.VNPAYConfig;
 import com.main.badminton.booking.converter.PaymentConverter;
 import com.main.badminton.booking.converter.SimplePaymentConverter;
 import com.main.badminton.booking.dto.request.PaymentRequestDTO;
-import com.main.badminton.booking.dto.response.PaymentResponseDTO;
-import com.main.badminton.booking.dto.response.SimplePaymentResponseDTO;
+import com.main.badminton.booking.dto.response.*;
 import com.main.badminton.booking.dto.vnpay.PaymentDTO;
-import com.main.badminton.booking.entity.BookingOrders;
-import com.main.badminton.booking.entity.Payments;
-import com.main.badminton.booking.entity.User;
+import com.main.badminton.booking.entity.*;
 import com.main.badminton.booking.repository.BookingOrdersRepository;
 import com.main.badminton.booking.repository.PaymentRepository;
 import com.main.badminton.booking.repository.UserRepo;
+import com.main.badminton.booking.repository.YardCheckInRepository;
 import com.main.badminton.booking.service.interfc.PaymentService;
 import com.main.badminton.booking.utils.VNPAY.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +37,9 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentConverter paymentConverter;
 
     @Autowired
+    private YardCheckInRepository yardCheckInRepository;
+
+    @Autowired
     private SimplePaymentConverter simplePaymentConverter;
     @Autowired
     private BookingOrdersRepository bookingOrdersRepository;
@@ -46,11 +47,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final VNPAYConfig vnPayConfig;
 
     @Override
-    public List<PaymentResponseDTO> getPaymentsByUserId(Integer userId) {
-        return paymentRepository.findByBookingOrders_User_Id(userId)
-                .stream()
-                .map(paymentConverter::convertToDto)
-                .collect(Collectors.toList());
+    public List<PaymentUserResponse> getPaymentsByUserId(Integer userId) {
+        List<Payments> list = paymentRepository.findByBookingOrders_User_Id(userId);
+        List<PaymentUserResponse> dtoList = list.stream().map(item -> mapToDTOPayment(item)).collect(Collectors.toList());
+        return dtoList;
     }
     @Override
     public List<PaymentResponseDTO> getAllPayments() {
@@ -78,8 +78,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void savePayment(Payments payments) {
-        paymentRepository.save(payments);
+    public Payments savePayment(Payments payments) {
+        return paymentRepository.save(payments);
     }
 
     @Override
@@ -111,5 +111,53 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentsList.stream()
                 .map(simplePaymentConverter::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+
+
+
+    private PaymentUserResponse mapToDTOPayment(Payments pay){
+       PaymentUserResponse payment = new PaymentUserResponse();
+       payment.setId(pay.getId());
+       payment.setFinalPrice(pay.getFinalPrice());
+       payment.setBooking_order(mapToDTOBooking(pay.getBookingOrders()));
+       YardCheckins yardCheckins = yardCheckInRepository.findByPaymentId(pay.getId());
+       payment.setCheckin(mapToDTOYardCheckIn(yardCheckins));
+       return payment;
+    }
+
+    private BookingOrderUserResponse mapToDTOBooking(BookingOrders orders){
+        BookingOrderUserResponse bookingOrder = new BookingOrderUserResponse();
+        bookingOrder.setTournamentStart(orders.getTournamentStart());
+        bookingOrder.setTournamentEnd(orders.getTournamentEnd());
+        bookingOrder.setUser_id(orders.getUser().getId());
+        bookingOrder.setYard(mapToDTOYard(orders.getYards()));
+        bookingOrder.setSlot(mapToDTOSlot(orders.getSlots()));
+        return bookingOrder;
+    }
+
+    private SlotUserResponse mapToDTOSlot(Slots slots){
+        SlotUserResponse slotUserResponse = new SlotUserResponse();
+        slotUserResponse.setId(slots.getId());
+        slotUserResponse.setStart_time(slots.getStartTime());
+        slotUserResponse.setEnd_time(slots.getEndTime());
+        return slotUserResponse;
+    }
+
+    private YardUserResponse mapToDTOYard(Yards yards){
+        YardUserResponse yardUserResponse = new YardUserResponse();
+        yardUserResponse.setId(yards.getId());
+        yardUserResponse.setYard_name(yards.getName());
+        return yardUserResponse;
+    }
+
+
+    private CheckInUserResponse mapToDTOYardCheckIn(YardCheckins yardCheckins){
+        CheckInUserResponse checkInUserResponse = new CheckInUserResponse();
+        checkInUserResponse.setId(yardCheckins.getId());
+        checkInUserResponse.setCheckIn_time(yardCheckins.getCheckInTime());
+        checkInUserResponse.setCheckOut_time(yardCheckins.getCheckOutTime());
+        checkInUserResponse.setStatus(yardCheckins.getStatus());
+        return checkInUserResponse;
     }
 }
