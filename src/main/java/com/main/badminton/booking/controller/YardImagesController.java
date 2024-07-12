@@ -2,6 +2,7 @@ package com.main.badminton.booking.controller;
 
 import java.util.List;
 
+import com.main.badminton.booking.dto.request.YardImagesDTO;
 import com.main.badminton.booking.dto.response.YardImageDTO;
 import com.main.badminton.booking.service.interfc.YardImageService;
 import com.main.badminton.booking.utils.wapper.API;
@@ -24,9 +25,9 @@ public class YardImagesController {
         return ResponseEntity.ok(API.Response.success(list));
     }
 
-    @PostMapping("/add-new-image/{yardId}")
-    public API.Response addNewImage(@PathVariable("yardId") Integer yardId, @RequestParam("image") String image){
-        yardImageService.createYardImage(image, yardId);
+    @PostMapping("/add-new-image")
+    public API.Response addNewImage(@RequestBody YardImagesDTO yardImagesDTO){
+        yardImageService.createYardImage(yardImagesDTO);
 
         return API.Response.success("Add new image success");
     }

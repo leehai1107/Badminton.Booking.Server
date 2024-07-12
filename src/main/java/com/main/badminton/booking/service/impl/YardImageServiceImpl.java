@@ -1,6 +1,7 @@
 package com.main.badminton.booking.service.impl;
 
 import com.main.badminton.booking.dto.response.YardImageDTO;
+import com.main.badminton.booking.dto.request.YardImagesDTO;
 import com.main.badminton.booking.entity.YardImages;
 import com.main.badminton.booking.entity.Yards;
 import com.main.badminton.booking.repository.YardImageRepository;
@@ -21,11 +22,11 @@ public class YardImageServiceImpl implements YardImageService {
     private YardImageRepository repository;
 
     @Override
-    public void createYardImage(String image, Integer yardId) {
-        Yards yards = yardRepository.findById(yardId).get();
+    public void createYardImage(YardImagesDTO yardImagesDTO) {
+        Yards yards = yardRepository.findById(yardImagesDTO.getYard_id()).get();
 
         YardImages yardImages = YardImages.builder()
-                .image(image)
+                .image(yardImagesDTO.getImg())
                 .yards(yards)
                 .build();
 
