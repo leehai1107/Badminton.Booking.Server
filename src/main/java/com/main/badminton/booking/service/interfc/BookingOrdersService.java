@@ -10,4 +10,5 @@ public interface BookingOrdersService {
     BookingOrdersResponseDTO createBookingOrder(BookingOrdersRequestDTO bookingOrdersRequestDTO);
     List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(Integer userId);
     BookingOrders updateStatus(Integer id);
+    void updateStatusToFalse(Integer id);
 }
