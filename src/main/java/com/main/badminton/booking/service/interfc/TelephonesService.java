@@ -8,4 +8,5 @@ public interface TelephonesService {
     TelephonesDTO update(Integer id, TelephonesDTO telephonesDTO);
     TelephonesDTO getById(Integer id);
     List<TelephonesDTO> getAll();
+    List<TelephonesDTO> getByTelephone(String telephone);
 }
