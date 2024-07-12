@@ -48,4 +48,13 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
                 .map(bookingOrdersConverter::entityToResponseDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public void updateStatusToFalse(Integer id) {
+        BookingOrders bookingOrders = bookingOrdersRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Booking order not found with id " + id));
+        bookingOrders.setStatus(false);  // Set status to false
+        bookingOrdersRepository.save(bookingOrders);
+    }
 }

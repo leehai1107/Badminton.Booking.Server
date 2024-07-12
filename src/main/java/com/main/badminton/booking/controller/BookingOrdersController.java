@@ -29,4 +29,14 @@ public class BookingOrdersController {
     public List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(@PathVariable Integer userId) {
         return bookingOrdersService.getAllBookingOrdersByUserId(userId);
     }
+
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<String> updateBookingOrderStatus(@PathVariable Integer id) {
+        try {
+            bookingOrdersService.updateStatusToFalse(id);
+            return ResponseEntity.ok("Booking order status updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }
