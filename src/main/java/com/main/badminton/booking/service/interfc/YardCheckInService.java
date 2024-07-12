@@ -10,4 +10,6 @@ public interface YardCheckInService {
     List<YardCheckins> findAllByYardId(Integer id);
     YardCheckinResponseDTO checkIn(YardCheckinRequestDTO requestDTO);
     YardCheckinResponseDTO updateStatus(YardCheckinRequestDTO requestDTO);
+
+    void saveCheckIns(YardCheckins yardCheckins);
 }

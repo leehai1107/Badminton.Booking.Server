@@ -2,14 +2,16 @@ package com.main.badminton.booking.controller;
 
 import com.main.badminton.booking.dto.request.PaymentRequestDTO;
 import com.main.badminton.booking.dto.response.PaymentResponseDTO;
+import com.main.badminton.booking.dto.response.PaymentUserResponse;
 import com.main.badminton.booking.dto.response.ResponseObject;
 import com.main.badminton.booking.dto.response.SimplePaymentResponseDTO;
 import com.main.badminton.booking.dto.vnpay.PaymentDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.entity.Payments;
-import com.main.badminton.booking.repository.BookingOrdersRepository;
+import com.main.badminton.booking.entity.YardCheckins;
 import com.main.badminton.booking.service.interfc.BookingOrdersService;
 import com.main.badminton.booking.service.interfc.PaymentService;
+import com.main.badminton.booking.service.interfc.YardCheckInService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +30,11 @@ public class PaymentController {
     private PaymentService paymentService;
     @Autowired
     private BookingOrdersService bookingOrdersService;
+    @Autowired
+    private YardCheckInService yardCheckInService;
 
     @GetMapping("/user/{userId}")
-    public List<PaymentResponseDTO> getPaymentsByUserId(@PathVariable Integer userId) {
+    public List<PaymentUserResponse> getPaymentsByUserId(@PathVariable Integer userId) {
         return paymentService.getPaymentsByUserId(userId);
     }
     @GetMapping("/yard/{yardId}")
@@ -65,7 +69,13 @@ public class PaymentController {
                 payments.setFinalPrice(Double.valueOf(amount));
                 payments.setBookingOrders(bookingOrders);
                 payments.setIStournament(true);
-                paymentService.savePayment(payments);
+                Payments payment = paymentService.savePayment(payments);
+
+                YardCheckins yardCheckins = new YardCheckins();
+                yardCheckins.setStatus(false);
+                yardCheckins.setPayments(payment);
+                yardCheckins.setUser(bookingOrders.getUser());
+                yardCheckInService.saveCheckIns(yardCheckins);
             }
             response.sendRedirect("http://localhost:5173/payment-success");// to done page
         } else {

@@ -43,4 +43,9 @@ public class YardCheckInImpl implements YardCheckInService {
         YardCheckins updatedYardCheckins = yardCheckInRepository.save(yardCheckins);
         return yardCheckinConverter.toDTO(updatedYardCheckins);
     }
+
+    @Override
+    public void saveCheckIns(YardCheckins yardCheckins) {
+        yardCheckInRepository.save(yardCheckins);
+    }
 }

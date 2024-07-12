@@ -16,4 +16,8 @@ public interface YardCheckInRepository extends JpaRepository<YardCheckins, Integ
             "JOIN bo.yards y " +
             "WHERE y.id = :id")
     List<YardCheckins> findAllByYardId(Integer id);
+
+
+    @Query("SELECT yc FROM YardCheckins yc WHERE yc.payments.id = :paymentId")
+    YardCheckins findByPaymentId(Integer paymentId);
 }
