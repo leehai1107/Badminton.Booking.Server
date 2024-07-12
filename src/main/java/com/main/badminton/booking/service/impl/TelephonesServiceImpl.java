@@ -55,4 +55,11 @@ public class TelephonesServiceImpl implements TelephonesService {
                 .map(telephonesConverter::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TelephonesDTO> getByTelephone(String telephone) {
+        return telephonesRepository.findByTelephones(telephone).stream()
+                .map(t -> telephonesConverter.toDTO(t))
+                .toList();
+    }
 }
