@@ -25,4 +25,5 @@ public class YardResponseDTO {
     private Integer hostId;
     private List<TelephonesDTO> telephones;
     private List<SlotResponseDTO> slots;
+    private List<YardImageDTO> images;
 }

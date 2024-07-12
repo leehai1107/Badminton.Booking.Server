@@ -88,4 +88,13 @@ public class YardController {
         }
         return  API.Response.success(yardResponseDTO);
     }
+
+    @PostMapping("{yardId}/add-images")
+    public API.Response<YardResponseDTO> addImagesToYard(@PathVariable Integer yardId, @RequestBody List<String> imageUrls){
+        YardResponseDTO yardResponseDTO = yardService.addImagesToYard(yardId, imageUrls);
+        if(yardResponseDTO == null) {
+            return API.Response.error(HttpStatus.BAD_REQUEST,"Error add images to yard", "Bad Request Error");
+        }
+        return  API.Response.success(yardResponseDTO);
+    }
 }
