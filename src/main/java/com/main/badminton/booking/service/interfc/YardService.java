@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.main.badminton.booking.dto.request.YardRequestDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
-import com.main.badminton.booking.entity.Yards;
 
 public interface YardService {
     YardResponseDTO createYard(YardRequestDTO yardRequestDTO);
@@ -17,5 +16,5 @@ public interface YardService {
     List<YardResponseDTO> getAllYardsByHostId(Integer hostId);
     YardResponseDTO getYardDetailActiveSlots(Integer yardId);
     List<YardResponseDTO> getRandomYard();
-
+    YardResponseDTO addTelephonesToYard(Integer Id, List<String> telephonesRequestDTO);
 }

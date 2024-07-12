@@ -1,5 +1,6 @@
 package com.main.badminton.booking.dto.response;
 
+import com.main.badminton.booking.dto.TelephonesDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,5 +23,6 @@ public class YardResponseDTO {
     private Integer createBy;
     private Integer updateBy;
     private Integer hostId;
+    private List<TelephonesDTO> telephones;
     private List<SlotResponseDTO> slots;
 }
