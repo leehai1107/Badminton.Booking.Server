@@ -9,4 +9,5 @@ public interface TelephonesService {
     TelephonesDTO getById(Integer id);
     List<TelephonesDTO> getAll();
     List<TelephonesDTO> getByTelephone(String telephone);
+    void deleteTelephoneById(Integer id);
 }

@@ -38,4 +38,9 @@ public class TelephonesController {
         List<TelephonesDTO> telephonesList = telephonesService.getAll();
         return ResponseEntity.ok(telephonesList);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTelephoneById(@PathVariable Integer id) {
+        telephonesService.deleteTelephoneById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
