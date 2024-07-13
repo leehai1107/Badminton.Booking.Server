@@ -9,6 +9,7 @@ import com.main.badminton.booking.repository.BookingOrdersRepository;
 import com.main.badminton.booking.service.interfc.BookingOrdersService;
 import com.main.badminton.booking.utils.logger.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,5 +85,16 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
                 .orElseThrow(() -> new IllegalStateException("Booking order not found with id " + id));
         bookingOrders.setStatus(false);  // Set status to false
         bookingOrdersRepository.save(bookingOrders);
+    }
+
+    @Override
+    // Every 5 minutes
+    @Scheduled(cron = "0 0/5 * * * *")
+    public void CornJobUpdateOrder() {
+        List<BookingOrders> exprireList = bookingOrdersRepository.findExpiredBooking(LocalDateTime.now());
+        for (BookingOrders bookingOrders : exprireList) {
+            bookingOrders.setStatus(false);
+            bookingOrdersRepository.save(bookingOrders);
+        }
     }
 }
