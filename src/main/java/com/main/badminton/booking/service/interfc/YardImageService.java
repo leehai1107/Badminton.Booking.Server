@@ -11,4 +11,5 @@ public interface YardImageService {
     List<YardImageDTO> findAllByYard_Id(Integer yardId);
     List<YardImageDTO> findByUrl(String url);
     YardImages save(YardImages yardImages);
+    void deleteYardImage(Integer imageId);
 }

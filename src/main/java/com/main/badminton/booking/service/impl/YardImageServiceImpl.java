@@ -50,6 +50,11 @@ public class YardImageServiceImpl implements YardImageService {
         return repository.save(yardImages);
     }
 
+    @Override
+    public void deleteYardImage(Integer imageId) {
+        repository.deleteById(Long.valueOf(imageId));
+    }
+
     private YardImageDTO mapToDTO(YardImages yardImages) {
         return YardImageDTO.builder()
                 .id(yardImages.getId())
