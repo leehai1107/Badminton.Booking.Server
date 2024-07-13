@@ -131,7 +131,7 @@ public class YardServiceImpl implements YardService {
     public List<YardResponseDTO> getAllYardsByHostId(Integer hostId) {
         List<Yards> yards = yardRepository.findAllByHostId(hostId); // Assuming you have a method in your repository to find yards by hostId
         return yards.stream()
-                .map(yardConverter::toResponseDTO)
+                .map(yardConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -145,7 +145,7 @@ public class YardServiceImpl implements YardService {
         List<Yards> list = yardRepository.findRandomActiveYards();
         return list
                 .stream()
-                .map(yardConverter::toResponseDTO)
+                .map(yardConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
