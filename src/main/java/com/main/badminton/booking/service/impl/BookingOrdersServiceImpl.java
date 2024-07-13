@@ -36,10 +36,10 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
             throw new RuntimeException("Slot is already booked for the selected time.");
         }
 
-        // Check if another user has already booked the same slot
-        if (!isSlotAvailableForUser(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt(), bookingOrders.getUser().getId())) {
-            throw new RuntimeException("Another user has already booked the slot.");
-        }
+//        // Check if another user has already booked the same slot
+//        if (!isSlotAvailableForUser(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt(), bookingOrders.getUser().getId())) {
+//            throw new RuntimeException("Another user has already booked the slot.");
+//        }
 
         // Set the current date and save the booking
         bookingOrders.setBookingAt(LocalDateTime.now());
@@ -58,7 +58,6 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
         // Check if another user has already booked the same yard, slot, and time
         return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAtAndUserId(yardId, slotId, bookingTime, userId) == 0;
     }
-
 
     @Override
     public BookingOrders updateStatus(Integer id) {
