@@ -13,7 +13,7 @@ import java.util.List;
 public interface BookingOrdersRepository extends JpaRepository<BookingOrders, Integer> {
     List<BookingOrders> findByUserId(Integer userId);
 
-    @Query("SELECT * FROM BookingOrders bo WHERE bo.bookingAt < :currentTime - INTERVAL 5 MINUTE AND bo.status IS NULL;")
+    @Query(value = "SELECT * FROM BookingOrders bo WHERE bo.bookingAt < (:currentTime - INTERVAL 5 MINUTE) AND bo.status IS NULL", nativeQuery = true)
     List<BookingOrders> findExpiredBooking(LocalDateTime currentTime);
 
     @Query("SELECT COUNT(*) FROM BookingOrders bo WHERE bo.yards.id = :yardId AND bo.slots.id = :slotId AND bo.tournamentEnd >= :tournamentStart AND (bo.status IS NULL OR bo.status IS true)")
