@@ -13,7 +13,7 @@ import java.util.List;
 public interface BookingOrdersRepository extends JpaRepository<BookingOrders, Integer> {
     List<BookingOrders> findByUserId(Integer userId);
 
-    @Query("SELECT COUNT(*) FROM BookingOrders bo WHERE bo.yards.id = :yardId AND bo.slots.id = :slotId AND bo.tournamentEnd >= :tournamentStart")
+    @Query("SELECT COUNT(*) FROM BookingOrders bo WHERE bo.yards.id = :yardId AND bo.slots.id = :slotId AND bo.tournamentEnd >= :tournamentStart AND (bo.status IS NULL OR bo.status IS true)")
     long countByYardsIdAndSlotsIdAndBookingAt(Integer yardId, Integer slotId, LocalDate tournamentStart);
 
     long countByYardsIdAndSlotsIdAndBookingAtAndUserId(Integer yardId, Integer slotId, LocalDateTime bookingTime, Integer userId);
