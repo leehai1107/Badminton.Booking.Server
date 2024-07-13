@@ -18,7 +18,7 @@ public class BookingOrdersController {
     @Autowired
     private BookingOrdersService bookingOrdersService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<List<BookingOrdersResponseDTO>> createBookingOrders(@RequestBody List<BookingOrdersRequestDTO> bookingOrdersRequestDTOs) {
         List<BookingOrdersResponseDTO> createdBookingOrders = bookingOrdersRequestDTOs.stream()
                 .map(bookingOrdersService::createBookingOrder)

@@ -25,14 +25,40 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
     @Autowired
     private BookingOrdersConverter bookingOrdersConverter;
 
-    @Override
     @Transactional
+    @Override
     public BookingOrdersResponseDTO createBookingOrder(BookingOrdersRequestDTO bookingOrdersRequestDTO) {
+        // Convert DTO to entity
         BookingOrders bookingOrders = bookingOrdersConverter.requestDtoToEntity(bookingOrdersRequestDTO);
-        bookingOrders.setBookingAt(LocalDateTime.now());  // Set the current date
+
+        // Check if the slot is available for booking
+        if (!isSlotAvailable(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt())) {
+            throw new RuntimeException("Slot is already booked for the selected time.");
+        }
+
+        // Check if another user has already booked the same slot
+        if (!isSlotAvailableForUser(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt(), bookingOrders.getUser().getId())) {
+            throw new RuntimeException("Another user has already booked the slot.");
+        }
+
+        // Set the current date and save the booking
+        bookingOrders.setBookingAt(LocalDateTime.now());
         BookingOrders savedBookingOrders = bookingOrdersRepository.save(bookingOrders);
+
+        // Convert entity to response DTO and return
         return bookingOrdersConverter.entityToResponseDto(savedBookingOrders);
     }
+
+    private boolean isSlotAvailable(Integer yardId, Integer slotId, LocalDateTime bookingTime) {
+        // Check if there's any booking for the same yard, slot, and time
+        return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAt(yardId, slotId, bookingTime) == 0;
+    }
+
+    private boolean isSlotAvailableForUser(Integer yardId, Integer slotId, LocalDateTime bookingTime, Integer userId) {
+        // Check if another user has already booked the same yard, slot, and time
+        return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAtAndUserId(yardId, slotId, bookingTime, userId) == 0;
+    }
+
 
     @Override
     public BookingOrders updateStatus(Integer id) {
