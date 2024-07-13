@@ -91,7 +91,10 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
     // Every 5 minutes
     @Scheduled(cron = "0 0/5 * * * *")
     public void CornJobUpdateOrder() {
-        List<BookingOrders> exprireList = bookingOrdersRepository.findExpiredBooking(LocalDateTime.now());
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime expirationTime = currentTime.minusMinutes(5);
+        List<BookingOrders> exprireList = bookingOrdersRepository.findExpiredBooking(expirationTime);
+
         for (BookingOrders bookingOrders : exprireList) {
             bookingOrders.setStatus(false);
             bookingOrdersRepository.save(bookingOrders);
