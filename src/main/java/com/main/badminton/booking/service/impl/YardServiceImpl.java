@@ -82,7 +82,7 @@ public class YardServiceImpl implements YardService {
     @Override
     public YardResponseDTO getYardById(Integer id) {
         return yardRepository.findById(id)
-                .map(yardConverter::toResponseDTO)
+                .map(yardConverter::convertToDTO)
                 .orElse(null);
     }
     public YardResponseDTO updateYard(Integer id, YardRequestDTO yardRequestDTO) {
@@ -103,7 +103,7 @@ public class YardServiceImpl implements YardService {
         List<Yards> yards = yardRepository.findAll(page).stream().toList();
         return yards
                 .stream()
-                .map(yardConverter::toResponseDTO)
+                .map(yardConverter::convertToDTO)
                 .toList();
     }
 
@@ -113,7 +113,7 @@ public class YardServiceImpl implements YardService {
         List<Yards> yards = yardRepository.findAllByActiveStatus(page);
         return yards
                 .stream()
-                .map(yardConverter::toResponseDTO)
+                .map(yardConverter::convertToDTO)
                 .toList();
     }
 
@@ -123,7 +123,7 @@ public class YardServiceImpl implements YardService {
         List<Yards> yards = yardRepository.findYardByName(name, page);
         return yards
                 .stream()
-                .map(yardConverter::toResponseDTO)
+                .map(yardConverter::convertToDTO)
                 .toList();
     }
 
