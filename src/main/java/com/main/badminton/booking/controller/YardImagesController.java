@@ -31,4 +31,9 @@ public class YardImagesController {
 
         return API.Response.success("Add new image success");
     }
+
+    @DeleteMapping("delete/{imageId}")
+    public void deleteYardImage(@PathVariable Integer imageId) {
+        yardImageService.deleteYardImage(imageId);
+    }
 }
