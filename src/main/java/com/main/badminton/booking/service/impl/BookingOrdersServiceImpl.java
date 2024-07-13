@@ -88,8 +88,8 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
     }
 
     @Override
-    // Every 5 minutes
-    @Scheduled(cron = "0 0/5 * * * *")
+    // Every 1 minutes
+    @Scheduled(cron = "0 0/1 * * * *")
     public void CornJobUpdateOrder() {
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime expirationTime = currentTime.minusMinutes(5);
