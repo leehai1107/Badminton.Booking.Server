@@ -7,11 +7,13 @@ import com.main.badminton.booking.dto.response.BookingOrdersResponseDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.repository.BookingOrdersRepository;
 import com.main.badminton.booking.service.interfc.BookingOrdersService;
+import com.main.badminton.booking.utils.logger.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,14 +34,14 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
         BookingOrders bookingOrders = bookingOrdersConverter.requestDtoToEntity(bookingOrdersRequestDTO);
 
         // Check if the slot is available for booking
-        if (!isSlotAvailable(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt())) {
+        if (!isSlotAvailable(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getTournamentStart())) {
             throw new RuntimeException("Slot is already booked for the selected time.");
         }
 
         // Check if another user has already booked the same slot
-        if (!isSlotAvailableForUser(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt(), bookingOrders.getUser().getId())) {
-            throw new RuntimeException("Another user has already booked the slot.");
-        }
+//        if (!isSlotAvailableForUser(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt(), bookingOrders.getUser().getId())) {
+//            throw new RuntimeException("Another user has already booked the slot.");
+//        }
 
         // Set the current date and save the booking
         bookingOrders.setBookingAt(LocalDateTime.now());
@@ -49,9 +51,9 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
         return bookingOrdersConverter.entityToResponseDto(savedBookingOrders);
     }
 
-    private boolean isSlotAvailable(Integer yardId, Integer slotId, LocalDateTime bookingTime) {
+    private boolean isSlotAvailable(Integer yardId, Integer slotId, LocalDate tournamentStart) {
         // Check if there's any booking for the same yard, slot, and time
-        return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAt(yardId, slotId, bookingTime) == 0;
+        return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAt(yardId, slotId, tournamentStart) == 0;
     }
 
     private boolean isSlotAvailableForUser(Integer yardId, Integer slotId, LocalDateTime bookingTime, Integer userId) {
