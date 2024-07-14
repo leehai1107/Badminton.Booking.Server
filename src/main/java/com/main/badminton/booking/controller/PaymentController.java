@@ -61,25 +61,28 @@ public class PaymentController {
         String status = request.getParameter("vnp_ResponseCode");
         String bookingCodeStr = request.getParameter("vnp_Data");
         String amount = request.getParameter("vnp_Amount");
-        if (status.equals("00") && !bookingCodeStr.isEmpty() && !amount.isEmpty()) {
-            Integer bookingCode = Integer.valueOf(bookingCodeStr);
+        Integer bookingCode = Integer.valueOf(bookingCodeStr);
+        if (status.equals("00") && !amount.isEmpty()) {
             BookingOrders bookingOrders = bookingOrdersService.updateStatus(bookingCode);
-            if(bookingOrders != null){
+            if (bookingOrders != null) {
                 Payments payments = new Payments();
                 payments.setFinalPrice(Double.valueOf(amount));
                 payments.setBookingOrders(bookingOrders);
                 payments.setIStournament(true);
                 Payments payment = paymentService.savePayment(payments);
+                System.out.println("Payment saved: " + payment);
 
                 YardCheckins yardCheckins = new YardCheckins();
                 yardCheckins.setStatus(false);
                 yardCheckins.setPayments(payment);
                 yardCheckins.setUser(bookingOrders.getUser());
-                yardCheckInService.saveCheckIns(yardCheckins);
+                YardCheckins savedCheckins = yardCheckInService.saveCheckIns(yardCheckins);
+                System.out.println("YardCheckins saved: " + savedCheckins);
             }
-            response.sendRedirect("http://localhost:5173/payment-success");// to done page
+            response.sendRedirect("http://localhost:5173/payment-success"); // to done page
         } else {
-            response.sendRedirect("http://localhost:5173/SuccessPayment");// to done page
+            bookingOrdersService.updateStatusToFalse(bookingCode);
+            response.sendRedirect("http://localhost:5173/payment-error"); // to done page
         }
     }
 }

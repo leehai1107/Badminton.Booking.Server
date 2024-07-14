@@ -74,8 +74,8 @@ public class YardController {
         return yardService.getYardDetailActiveSlots(yardId);
     }
 
-    @GetMapping("/getRandom")
-    public ResponseEntity<Object> getRandomYard(){
-        return ResponseEntity.ok(API.Response.success(yardService.getRandomYard()));
+    @GetMapping("/getRandom/{numberRandom}")
+    public ResponseEntity<Object> getRandomYard(@PathVariable("numberRandom") Integer numberRandom){
+        return ResponseEntity.ok(API.Response.success(yardService.getRandomYard(numberRandom)));
     }
 }

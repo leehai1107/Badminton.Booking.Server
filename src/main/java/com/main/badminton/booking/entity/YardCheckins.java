@@ -30,7 +30,7 @@ public class YardCheckins {
     private LocalTime checkOutTime;
 
     @JsonIgnore
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id")
     private Payments payments;
 

@@ -16,6 +16,6 @@ public interface YardService {
     List<YardResponseDTO> getYardsByName(String name, int pageNumber);
     List<YardResponseDTO> getAllYardsByHostId(Integer hostId);
     YardResponseDTO getYardDetailActiveSlots(Integer yardId);
-    List<YardResponseDTO> getRandomYard();
+    List<YardResponseDTO> getRandomYard(Integer numberRandom);
 
 }
