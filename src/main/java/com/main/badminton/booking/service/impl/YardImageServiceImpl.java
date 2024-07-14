@@ -41,6 +41,19 @@ public class YardImageServiceImpl implements YardImageService {
         return listDTO;
     }
 
+    @Override
+    public List<YardImageDTO> findByUrl(String url) {
+        return repository.findByUrl(url).stream().map(this::mapToDTO).toList();
+    }
+
+    public YardImages save(YardImages yardImages){
+        return repository.save(yardImages);
+    }
+
+    @Override
+    public void deleteYardImage(Integer imageId) {
+        repository.deleteById(Long.valueOf(imageId));
+    }
 
     private YardImageDTO mapToDTO(YardImages yardImages) {
         return YardImageDTO.builder()

@@ -11,4 +11,6 @@ public interface BookingOrdersService {
     List<BookingOrdersResponseDTO> getAllBookingOrdersByUserId(Integer userId);
     BookingOrders updateStatus(Integer id);
     void updateStatusToFalse(Integer id);
+
+    void CornJobUpdateOrder();
 }

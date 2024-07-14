@@ -7,11 +7,14 @@ import com.main.badminton.booking.dto.response.BookingOrdersResponseDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.repository.BookingOrdersRepository;
 import com.main.badminton.booking.service.interfc.BookingOrdersService;
+import com.main.badminton.booking.utils.logger.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,14 +28,40 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
     @Autowired
     private BookingOrdersConverter bookingOrdersConverter;
 
-    @Override
     @Transactional
+    @Override
     public BookingOrdersResponseDTO createBookingOrder(BookingOrdersRequestDTO bookingOrdersRequestDTO) {
+        // Convert DTO to entity
         BookingOrders bookingOrders = bookingOrdersConverter.requestDtoToEntity(bookingOrdersRequestDTO);
-        bookingOrders.setBookingAt(LocalDateTime.now());  // Set the current date
+
+        // Check if the slot is available for booking
+        if (!isSlotAvailable(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getTournamentStart())) {
+            throw new RuntimeException("Slot is already booked for the selected time.");
+        }
+
+        // Check if another user has already booked the same slot
+//        if (!isSlotAvailableForUser(bookingOrders.getYards().getId(), bookingOrders.getSlots().getId(), bookingOrders.getBookingAt(), bookingOrders.getUser().getId())) {
+//            throw new RuntimeException("Another user has already booked the slot.");
+//        }
+
+        // Set the current date and save the booking
+        bookingOrders.setBookingAt(LocalDateTime.now());
         BookingOrders savedBookingOrders = bookingOrdersRepository.save(bookingOrders);
+
+        // Convert entity to response DTO and return
         return bookingOrdersConverter.entityToResponseDto(savedBookingOrders);
     }
+
+    private boolean isSlotAvailable(Integer yardId, Integer slotId, LocalDate tournamentStart) {
+        // Check if there's any booking for the same yard, slot, and time
+        return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAt(yardId, slotId, tournamentStart) == 0;
+    }
+
+    private boolean isSlotAvailableForUser(Integer yardId, Integer slotId, LocalDateTime bookingTime, Integer userId) {
+        // Check if another user has already booked the same yard, slot, and time
+        return bookingOrdersRepository.countByYardsIdAndSlotsIdAndBookingAtAndUserId(yardId, slotId, bookingTime, userId) == 0;
+    }
+
 
     @Override
     public BookingOrders updateStatus(Integer id) {
@@ -56,5 +85,19 @@ public class BookingOrdersServiceImpl implements BookingOrdersService {
                 .orElseThrow(() -> new IllegalStateException("Booking order not found with id " + id));
         bookingOrders.setStatus(false);  // Set status to false
         bookingOrdersRepository.save(bookingOrders);
+    }
+
+    @Override
+    // Every 1 minutes
+    @Scheduled(cron = "0 0/1 * * * *")
+    public void CornJobUpdateOrder() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime expirationTime = currentTime.minusMinutes(5);
+        List<BookingOrders> exprireList = bookingOrdersRepository.findExpiredBooking(expirationTime);
+
+        for (BookingOrders bookingOrders : exprireList) {
+            bookingOrders.setStatus(false);
+            bookingOrdersRepository.save(bookingOrders);
+        }
     }
 }

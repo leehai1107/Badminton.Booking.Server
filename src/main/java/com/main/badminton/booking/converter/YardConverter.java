@@ -2,6 +2,7 @@ package com.main.badminton.booking.converter;
 
 import com.main.badminton.booking.dto.request.YardRequestDTO;
 import com.main.badminton.booking.dto.response.SlotResponseDTO;
+import com.main.badminton.booking.dto.response.YardImageDTO;
 import com.main.badminton.booking.dto.response.YardResponseDTO;
 import com.main.badminton.booking.entity.Slots;
 import com.main.badminton.booking.entity.User;
@@ -18,6 +19,9 @@ public class YardConverter {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private YardImagesConverter yardImagesConverter;
 
     public YardResponseDTO toResponseDTO(Yards yard) {
         YardResponseDTO yardResponseDTO = modelMapper.map(yard, YardResponseDTO.class);
@@ -78,6 +82,10 @@ public class YardConverter {
                 .map(this::convertToSlotResponseDTO)
                 .collect(Collectors.toList());
         yardResponseDTO.setSlots(slotResponseDTOs);
+        List<YardImageDTO> yardImageDTOS = yards.getYardImages().stream()
+                .map(t -> yardImagesConverter.toDTO(t))
+                .toList();
+        yardResponseDTO.setImages(yardImageDTOS);
         return yardResponseDTO;
     }
 }

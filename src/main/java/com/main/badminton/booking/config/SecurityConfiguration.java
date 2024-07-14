@@ -76,7 +76,7 @@ public class SecurityConfiguration {
                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/api/payments/**","/api/v1/bookingOrders/**", "/api/v1/user/**",
                                 "/swagger-resources/**", "/webjars/**", "/oauth2/authorization/google", "/login/oauth2/code/google", "/api/v1/checkIn/**"
-                                ,"/api/v1/yardImages/**"
+                                ,"/api/v1/yardImages/**" , "/api/telephones/**", "/api/v1/feedback/**"
                         )
                         .permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
