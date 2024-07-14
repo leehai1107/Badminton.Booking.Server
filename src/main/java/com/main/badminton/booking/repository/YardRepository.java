@@ -26,6 +26,6 @@ public interface YardRepository extends JpaRepository<Yards, Integer> {
             "(s.status = true OR s.status IS NULL)")
     Optional<Yards> getYardDetailActiveSlots(@Param("yardId") Integer yardId);
 
-    @Query(value = "SELECT * FROM yards WHERE status = true ORDER BY RAND() LIMIT 5", nativeQuery = true)
-    List<Yards> findRandomActiveYards();
+    @Query(value = "SELECT * FROM yards WHERE status = true ORDER BY RAND() LIMIT :numberRandom", nativeQuery = true)
+    List<Yards> findRandomActiveYards(Integer numberRandom);
 }

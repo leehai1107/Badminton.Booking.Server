@@ -141,8 +141,9 @@ public class YardServiceImpl implements YardService {
                 .map(yardConverter::convertToDTO)
                 .orElse(null);
     }
-    public List<YardResponseDTO> getRandomYard() {
-        List<Yards> list = yardRepository.findRandomActiveYards();
+    @Override
+    public List<YardResponseDTO> getRandomYard(Integer numberRandom) {
+        List<Yards> list = yardRepository.findRandomActiveYards(numberRandom);
         return list
                 .stream()
                 .map(yardConverter::convertToDTO)

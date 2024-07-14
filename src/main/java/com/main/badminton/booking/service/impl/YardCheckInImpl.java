@@ -45,7 +45,7 @@ public class YardCheckInImpl implements YardCheckInService {
     }
 
     @Override
-    public void saveCheckIns(YardCheckins yardCheckins) {
-        yardCheckInRepository.save(yardCheckins);
+    public YardCheckins saveCheckIns(YardCheckins yardCheckins) {
+       return yardCheckInRepository.save(yardCheckins);
     }
 }

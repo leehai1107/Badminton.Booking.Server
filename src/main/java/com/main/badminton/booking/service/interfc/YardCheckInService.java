@@ -11,5 +11,5 @@ public interface YardCheckInService {
     YardCheckinResponseDTO checkIn(YardCheckinRequestDTO requestDTO);
     YardCheckinResponseDTO updateStatus(YardCheckinRequestDTO requestDTO);
 
-    void saveCheckIns(YardCheckins yardCheckins);
+    YardCheckins saveCheckIns(YardCheckins yardCheckins);
 }
