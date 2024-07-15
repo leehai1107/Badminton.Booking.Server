@@ -1,5 +1,6 @@
 package com.main.badminton.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,19 +26,22 @@ public class BookingOrders {
     private Integer id;
 
     @Column(name = "booking_at")
-    private LocalDate bookingAt = LocalDate.now();
+    private LocalDateTime bookingAt = LocalDateTime.now();
 
     @Column(name = "status")
-    private String status = "pending";
+    private Boolean status;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "yard_id")
     private Yards yards;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "slot_id")
     private Slots slots;
@@ -47,7 +52,19 @@ public class BookingOrders {
     @Column(name = "tournament_end")
     private LocalDate tournamentEnd;
 
-    @OneToMany(mappedBy = "bookingOrders", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "bookingOrders", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Payments> payments;
+
+    @Override
+    public String toString() {
+        return "BookingOrders{" +
+                "id=" + id +
+                ", bookingAt=" + bookingAt +
+                ", status=" + status +
+                ", tournamentStart=" + tournamentStart +
+                ", tournamentEnd=" + tournamentEnd +
+                '}';
+    }
 
 }

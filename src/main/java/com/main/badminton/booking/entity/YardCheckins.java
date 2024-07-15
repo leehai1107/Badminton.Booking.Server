@@ -21,7 +21,7 @@ public class YardCheckins {
     private Integer id;
 
     @Column(name = "status")
-    private String status;
+    private Boolean status;
 
     @Column(name = "checkin_time")
     private LocalTime checkInTime;
@@ -36,11 +36,16 @@ public class YardCheckins {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "checkin_by")
     private User checkInBy;
+
+    @Override
+    public String toString() {
+        return "YardCheckins{" +
+                "id=" + id +
+                ", status=" + status +
+                ", checkInTime=" + checkInTime +
+                ", checkOutTime=" + checkOutTime +
+                '}';
+    }
 }

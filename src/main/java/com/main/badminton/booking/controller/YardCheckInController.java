@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/checkIn")
 @RequiredArgsConstructor
@@ -19,9 +21,9 @@ public class YardCheckInController {
     @Autowired
     private YardCheckInService yardCheckInService;
 
-    @GetMapping("/findAll")
-    public ResponseEntity<Object> findAllYardCheckIn(){
-        List<YardCheckins> list = yardCheckInService.findAllYardCheckIns();
+    @GetMapping("/findByYardId")
+    public ResponseEntity<Object> findAllYardCheckIn(@RequestParam(name = "yardId") Integer id){
+        List<YardCheckins> list = yardCheckInService.findAllByYardId(id);
         if(list != null){
             return ResponseEntity.ok(API.Response.success(list));
         } else {

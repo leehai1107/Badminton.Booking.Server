@@ -30,7 +30,6 @@ public class YardCheckinConverter {
                 .checkInTime(dto.getCheckInTime())
                 .checkOutTime(dto.getCheckOutTime())
                 .payments(payment)
-                .user(user)
                 .checkInBy(checkInBy)
                 .build();
     }
@@ -43,7 +42,6 @@ public class YardCheckinConverter {
                 .checkInTime(entity.getCheckInTime())
                 .checkOutTime(entity.getCheckOutTime())
                 .paymentId(entity.getPayments().getId())
-                .userId(entity.getUser().getId())
                 .checkInById(entity.getCheckInBy().getId())
                 .build();
     }

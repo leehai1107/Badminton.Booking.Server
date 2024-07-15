@@ -53,6 +53,19 @@ public class JWTServiceImpl implements JWTService {
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long jwtExpiration) {
         User user = userRepo.findByUsername(userDetails.getUsername()).get();
+
+        if(user.getRole().getId() == 3){
+            return Jwts.builder()
+                    .setClaims(extraClaims)
+                    .setSubject(userDetails.getUsername())
+                    .claim("role", populateAuthorities(userDetails.getAuthorities()))
+                    .claim("id", user.getId())
+                    .claim("manager_id", user.getManager().getId())
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                    .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                    .compact();
+        }
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())

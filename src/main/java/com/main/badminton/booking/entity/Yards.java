@@ -1,6 +1,7 @@
 package com.main.badminton.booking.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,20 +51,25 @@ public class Yards {
     @Column(name = "close_time")
     private LocalTime closeTime;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "host_id")
     private User host;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<YardImages> yardImages;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Telephones> telephones;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Slots> slots;
 
-    @OneToMany(mappedBy = "yards", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
 
     @Column(name = "create_date", nullable = false, updatable = false)
@@ -85,6 +91,7 @@ public class Yards {
     @LastModifiedBy
     private Integer updateBy;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "yard_types",
@@ -92,4 +99,18 @@ public class Yards {
             inverseJoinColumns = @JoinColumn(name = "type_id")
     )
     private List<Types> types = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Yards{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", provinceId=" + provinceId +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", openTime=" + openTime +
+                ", closeTime=" + closeTime +
+                '}';
+    }
 }
