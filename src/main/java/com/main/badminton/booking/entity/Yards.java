@@ -92,4 +92,18 @@ public class Yards {
             inverseJoinColumns = @JoinColumn(name = "type_id")
     )
     private List<Types> types = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Yards{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", provinceId=" + provinceId +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", openTime=" + openTime +
+                ", closeTime=" + closeTime +
+                '}';
+    }
 }

@@ -61,4 +61,19 @@ public class Slots {
 
     @OneToMany(mappedBy = "slots", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
+
+    @Override
+    public String toString() {
+        return "Slots{" +
+                "id=" + id +
+                ", price=" + price +
+                ", status=" + status +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                ", createBy=" + createBy +
+                ", updateBy=" + updateBy +
+                '}';
+    }
 }
