@@ -37,7 +37,7 @@ public class YardCheckInController {
 //        return ResponseEntity.ok(responseDTO);
 //    }
 
-    @PutMapping("/status")
+    @PatchMapping("/status")
     public ResponseEntity<YardCheckinResponseDTO> updateStatus(@RequestBody YardCheckinRequestDTO requestDTO) {
         YardCheckinResponseDTO responseDTO = yardCheckInService.updateStatus(requestDTO);
         return ResponseEntity.ok(responseDTO);
