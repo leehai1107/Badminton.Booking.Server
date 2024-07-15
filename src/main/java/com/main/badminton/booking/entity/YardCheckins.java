@@ -36,11 +36,6 @@ public class YardCheckins {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "checkin_by")
     private User checkInBy;
 }

@@ -75,7 +75,6 @@ public class PaymentController {
                 YardCheckins yardCheckins = new YardCheckins();
                 yardCheckins.setStatus(false);
                 yardCheckins.setPayments(payment);
-                yardCheckins.setUser(bookingOrders.getUser());
                 yardCheckInService.saveCheckIns(yardCheckins);
             }
             response.sendRedirect("http://localhost:5173/payment-success"); // to done page

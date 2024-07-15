@@ -100,9 +100,6 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<FeedBacks> feedBacks;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<YardCheckins> yardCheckins;
 
     @OneToMany(mappedBy = "checkInBy", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     @JsonIgnore
