@@ -1,12 +1,15 @@
 package com.main.badminton.booking.converter;
 
 import com.main.badminton.booking.dto.request.PaymentRequestDTO;
+import com.main.badminton.booking.dto.request.YardCheckinRequestDTO;
 import com.main.badminton.booking.dto.response.BookingOrdersResponseDTO;
 import com.main.badminton.booking.dto.response.SimplePaymentResponseDTO;
 import com.main.badminton.booking.dto.response.SimpleYardResponseDTO;
 import com.main.badminton.booking.dto.response.SlotResponseDTO;
 import com.main.badminton.booking.entity.BookingOrders;
 import com.main.badminton.booking.entity.Payments;
+import com.main.badminton.booking.entity.YardCheckins;
+import com.main.badminton.booking.service.interfc.YardCheckInService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,12 +20,23 @@ public class SimplePaymentConverter {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private YardCheckInService yardCheckInService;
+
     public SimplePaymentResponseDTO convertToDto(Payments payments) {
         SimplePaymentResponseDTO dto = modelMapper.map(payments, SimplePaymentResponseDTO.class);
+
         if (payments.getBookingOrders() != null) {
             BookingOrdersResponseDTO bookingOrdersDTO = convertBookingOrderToDto(payments.getBookingOrders());
             dto.setBookingOrder(bookingOrdersDTO);
         }
+
+        YardCheckins yardCheckins = yardCheckInService.findByPaymentId(payments.getId());
+        if (yardCheckins != null) {
+            YardCheckinRequestDTO checkinDTO = modelMapper.map(yardCheckins, YardCheckinRequestDTO.class);
+            dto.setCheckin(checkinDTO);
+        }
+
         return dto;
     }
 

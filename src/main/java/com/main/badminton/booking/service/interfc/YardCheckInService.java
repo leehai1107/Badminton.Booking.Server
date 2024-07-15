@@ -12,4 +12,5 @@ public interface YardCheckInService {
     YardCheckinResponseDTO updateStatus(YardCheckinRequestDTO requestDTO);
 
     YardCheckins saveCheckIns(YardCheckins yardCheckins);
+    YardCheckins findByPaymentId(Integer paymentId);
 }

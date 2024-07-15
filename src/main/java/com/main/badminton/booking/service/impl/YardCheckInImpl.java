@@ -48,4 +48,8 @@ public class YardCheckInImpl implements YardCheckInService {
     public YardCheckins saveCheckIns(YardCheckins yardCheckins) {
        return yardCheckInRepository.save(yardCheckins);
     }
+    @Override
+    public YardCheckins findByPaymentId(Integer paymentId) {
+        return yardCheckInRepository.findByPaymentId(paymentId);
+    }
 }
