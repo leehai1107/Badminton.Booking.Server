@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,18 @@ public class YardConverter {
 
     public YardResponseDTO toResponseDTO(Yards yard) {
         YardResponseDTO yardResponseDTO = modelMapper.map(yard, YardResponseDTO.class);
-        List<SlotResponseDTO> slotResponseDTOs = yard.getSlots().stream()
-                .map(this::convertToSlotResponseDTO)
-                .collect(Collectors.toList());
+
+        List<SlotResponseDTO> slotResponseDTOs = new ArrayList<>();
+        if (yard.getSlots() != null) {
+            slotResponseDTOs = yard.getSlots().stream()
+                    .map(this::convertToSlotResponseDTO)
+                    .collect(Collectors.toList());
+        }
+
         yardResponseDTO.setSlots(slotResponseDTOs);
         return yardResponseDTO;
     }
+
 
     private SlotResponseDTO convertToSlotResponseDTO(Slots slot) {
         return modelMapper.map(slot, SlotResponseDTO.class);

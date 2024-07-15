@@ -69,7 +69,7 @@ public class YardServiceImpl implements YardService {
         yard.setHost(host);
 
         Yards savedYard = yardRepository.save(yard);
-        return yardConverter.convertToDTO(savedYard);
+        return yardConverter.toResponseDTO(savedYard);
     }
     @Override
     public List<Integer> getProvinceIds() {
