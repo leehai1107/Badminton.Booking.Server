@@ -1,5 +1,6 @@
 package com.main.badminton.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,10 +56,12 @@ public class Slots {
     @LastModifiedBy
     private Integer updateBy;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "yard_id")
     private Yards yards;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "slots", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
 

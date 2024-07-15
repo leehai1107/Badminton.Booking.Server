@@ -1,5 +1,6 @@
 package com.main.badminton.booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,11 +53,27 @@ public class FeedBacks {
     @LastModifiedBy
     private Integer updateBy;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "payment_id")
     private Payments payments;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Override
+    public String toString() {
+        return "FeedBacks{" +
+                "id=" + id +
+                ", rating=" + rating +
+                ", problem='" + problem + '\'' +
+                ", createAt='" + createAt + '\'' +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                ", createBy=" + createBy +
+                ", updateBy=" + updateBy +
+                '}';
+    }
 }

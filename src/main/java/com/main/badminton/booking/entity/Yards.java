@@ -1,6 +1,7 @@
 package com.main.badminton.booking.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,19 +51,24 @@ public class Yards {
     @Column(name = "close_time")
     private LocalTime closeTime;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "host_id")
     private User host;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<YardImages> yardImages;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Telephones> telephones;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Slots> slots;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "yards", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<BookingOrders> bookingOrders;
 
@@ -85,6 +91,7 @@ public class Yards {
     @LastModifiedBy
     private Integer updateBy;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "yard_types",

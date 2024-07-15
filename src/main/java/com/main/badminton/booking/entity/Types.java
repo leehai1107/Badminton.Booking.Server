@@ -25,4 +25,12 @@ public class Types {
 
     @ManyToMany(mappedBy = "types")
     private List<Yards> yards = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Types{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
