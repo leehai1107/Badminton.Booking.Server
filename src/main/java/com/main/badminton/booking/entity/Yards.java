@@ -39,7 +39,7 @@ public class Yards {
     @Column(name = "province_id")
     private Integer provinceId;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "status")
