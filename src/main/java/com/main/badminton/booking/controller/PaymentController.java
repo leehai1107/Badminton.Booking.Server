@@ -72,11 +72,10 @@ public class PaymentController {
                 Payments payment = paymentService.savePayment(payments);
                 System.out.println("Payment saved: " + payment);
 
-//                YardCheckins yardCheckins = new YardCheckins();
-//                yardCheckins.setStatus(false);
-//                yardCheckins.setPayments(payment);
-//                yardCheckins.setUser(bookingOrders.getUser());
-//                yardCheckInService.saveCheckIns(yardCheckins);
+                YardCheckins yardCheckins = new YardCheckins();
+                yardCheckins.setStatus(false);
+                yardCheckins.setPayments(payment);
+                yardCheckInService.saveCheckIns(yardCheckins);
             }
             response.sendRedirect("http://localhost:5173/payment-success"); // to done page
         } else {
