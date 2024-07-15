@@ -38,4 +38,14 @@ public class YardCheckins {
     @JsonIgnore
     @JoinColumn(name = "checkin_by")
     private User checkInBy;
+
+    @Override
+    public String toString() {
+        return "YardCheckins{" +
+                "id=" + id +
+                ", status=" + status +
+                ", checkInTime=" + checkInTime +
+                ", checkOutTime=" + checkOutTime +
+                '}';
+    }
 }
