@@ -85,6 +85,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setCreateBy(0);
         }
 
+        // Nếu vai trò là "owner", thì mặc định status == false
+        user.setStatus(4 != role.getId());
+
+
         var savedUser = userRepo.save(user);
         var jwtToken = jwtService.generateToken(savedUser);
         var refreshToken = jwtService.generateRefreshToken(savedUser);
@@ -100,6 +104,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
         var user = userRepo.findByUsername(signInRequest.getUsername()).orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
+        // check status of user
+        if (!user.getStatus()) {
+            throw new IllegalArgumentException("User not active");
+        }
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 

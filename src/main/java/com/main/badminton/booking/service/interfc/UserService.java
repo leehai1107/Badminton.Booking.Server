@@ -2,7 +2,6 @@ package com.main.badminton.booking.service.interfc;
 
 import com.main.badminton.booking.dto.request.ChangePasswordRequest;
 import com.main.badminton.booking.dto.request.UserDTO;
-import com.main.badminton.booking.dto.request.UserRequestDTO;
 import com.main.badminton.booking.dto.response.UserResponseDTO;
 import com.main.badminton.booking.entity.User;
 import org.springframework.data.domain.Page;
@@ -24,4 +23,5 @@ public interface UserService {
     UserResponseDTO updateUserInfo(Integer id, UserDTO userDTO);
     Page<UserResponseDTO> getAllUsers(Pageable pageable);
     Page<UserResponseDTO> getAllStaffsByManager(Integer managerId, Pageable pageable);
+    void toggleStatus(Integer id);
 }

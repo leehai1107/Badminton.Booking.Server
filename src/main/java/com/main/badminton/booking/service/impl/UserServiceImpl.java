@@ -125,4 +125,13 @@ public class UserServiceImpl implements UserService {
         Page<User> users = userRepo.GetStaffsByManager(managerId, pageable);
         return users.map(userConverter::convertToDto);
     }
+
+    @Override
+    public void toggleStatus(Integer id) {
+        User user = userRepo.findById(id).orElse(null);
+        if (user != null) {
+            user.setStatus(!user.getStatus());
+            userRepo.save(user);
+        }
+    }
 }

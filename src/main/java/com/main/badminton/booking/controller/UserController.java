@@ -121,4 +121,11 @@ public class UserController {
         Page<UserResponseDTO> users = userService.getAllStaffsByManager(managerId, pageable);
         return ResponseEntity.ok(users.getContent());
     }
+
+    // toggle status of user
+    @PatchMapping("/toggle-status/{id}")
+    public ResponseEntity<?> toggleStatus(@PathVariable Integer id) {
+        userService.toggleStatus(id);
+        return ResponseEntity.ok("User status toggled successfully");
+    }
 }
