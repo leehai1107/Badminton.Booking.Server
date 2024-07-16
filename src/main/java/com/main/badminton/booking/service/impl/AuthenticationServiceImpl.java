@@ -87,6 +87,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // Nếu vai trò là "owner", thì mặc định status == false
         user.setStatus(4 != role.getId());
+        // Nếu vai trò là owner, set manager = 1
+        if (4 == role.getId()) {
+            user.setManager(userRepo.findById(1).orElse(null));
+        }
 
 
         var savedUser = userRepo.save(user);
