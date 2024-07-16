@@ -28,4 +28,11 @@ public class FeedbackController {
         List<SimpleFeedBackResponseDTO> feedbacks = feedbackService.getAllFeedbacks();
         return new ResponseEntity<>(feedbacks, HttpStatus.OK);
     }
+
+    // Get all feedbacks of a yard
+    @GetMapping("/yard/{yardId}")
+    public ResponseEntity<List<SimpleFeedBackResponseDTO>> getAllFeedbacksByYardId(@PathVariable("yardId") Integer yardId) {
+        List<SimpleFeedBackResponseDTO> feedbacks = feedbackService.getAllFeedbacksByYardId(yardId);
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
 }

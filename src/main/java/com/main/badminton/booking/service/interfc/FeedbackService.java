@@ -9,4 +9,5 @@ import java.util.List;
 public interface FeedbackService {
     FeedbackResponseDTO createFeedback(FeedbackRequestDTO requestDTO);
     List<SimpleFeedBackResponseDTO> getAllFeedbacks();
+    List<SimpleFeedBackResponseDTO> getAllFeedbacksByYardId(Integer id);
 }

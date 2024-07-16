@@ -39,4 +39,11 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .map(simpleFeedBackConverter::entityToDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<SimpleFeedBackResponseDTO> getAllFeedbacksByYardId(Integer id) {
+        return feedbackRepository.findByYardId(id).stream()
+                .map(simpleFeedBackConverter::entityToDTO)
+                .collect(Collectors.toList());
+    }
 }
