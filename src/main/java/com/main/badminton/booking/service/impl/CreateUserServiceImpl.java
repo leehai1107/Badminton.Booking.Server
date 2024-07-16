@@ -35,6 +35,7 @@ public class CreateUserServiceImpl implements CreateUserService {
         user.setRole(roleRepository.findById(createUserRequestDTO.getRoleId()).orElse(null));
         user.setManager(userRepository.findById(createUserRequestDTO.getManagerId()).orElse(null));
         user.setCreateDate(LocalDate.now());
+        user.setStatus(true);
 
         User savedUser = userRepository.save(user);
 
