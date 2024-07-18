@@ -48,6 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setLastName(oAuth2User.getAttribute("family_name"));
             user.setPassword(""); // Không cần mật khẩu cho người dùng OAuth2
             user.setRole(defaultRole()); // Thiết lập vai trò mặc định cho người dùng OAuth2
+            user.setStatus(true);
             userRepository.save(user);
         }
 
